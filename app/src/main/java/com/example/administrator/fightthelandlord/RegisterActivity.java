@@ -32,11 +32,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnLogin:
+            case R.id.btnBack:
                 RegisterActivity.this.finish();
                 break;
             case R.id.btnRegister:
-
                 RegisterActivity.this.finish();
                 break;
             default:

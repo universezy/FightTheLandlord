@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText metID, metPassword;
-    private Button mbtnLogin;
-    private TextView mtvRegister;
+    private Button mbtnRegister, mbtnLogin;
 
 
     @Override
@@ -29,8 +27,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mbtnLogin = (Button) findViewById(R.id.btnLogin);
         mbtnLogin.setOnClickListener(this);
 
-        mtvRegister = (TextView) findViewById(R.id.tvRegister);
-        mtvRegister.setOnClickListener(this);
+        mbtnRegister = (Button) findViewById(R.id.btnRegister);
+        mbtnRegister.setOnClickListener(this);
 
     }
 
@@ -42,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intentLogin);
                 LoginActivity.this.finish();
                 break;
-            case R.id.tvRegister:
+            case R.id.btnRegister:
                 Intent intentRegister = new Intent(LoginActivity.this,RegisterActivity.class);
                 startActivity(intentRegister);
                 break;
