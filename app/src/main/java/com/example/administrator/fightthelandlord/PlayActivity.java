@@ -13,7 +13,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mtvTime, mtvRestComputer1, mtvWordsComputer1, mtvRestComputer2, mtvWordsComputer2, mtvRestPlayer, mtvWordsPlayer;
     private ImageView ivComputer1, ivComputer2;
     private TableView mvTable;
-    private LinearLayout LinearLayout;
+    private LinearLayout mllComputer1,mllComputer2,llPlayer,llButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,22 +48,21 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         mvTable = (TableView)findViewById(R.id.vTable);
 
 
-        LinearLayout = (LinearLayout) findViewById(R.id.llButton);
-
-        LinearLayout.setVisibility(View.INVISIBLE);
+        llButton = (LinearLayout) findViewById(R.id.llButton);
+        llButton.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvTime:
-                LinearLayout.setVisibility(View.VISIBLE);
+                llButton.setVisibility(View.VISIBLE);
                 break;
             case R.id.btnBack:
                 PlayActivity.this.finish();
                 break;
             case R.id.btnPass:
-                LinearLayout.setVisibility(View.INVISIBLE);
+                llButton.setVisibility(View.INVISIBLE);
                 break;
             case R.id.btnHint:
 

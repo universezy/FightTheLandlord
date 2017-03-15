@@ -61,6 +61,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/llComputer1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
@@ -164,6 +165,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llComputer2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
@@ -197,6 +199,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llPlayer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
