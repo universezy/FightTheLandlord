@@ -59,6 +59,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 UserName = metName.getText().toString();
                 UserID = metID.getText().toString();
                 UserPassword = metPassword.getText().toString();
+                if (UserName.equals("") || UserID.equals("") || UserPassword.equals("")) break;
                 if (UserConfirm.equals(UserPassword)) {
                     File file = new File(this.getFilesDir(), "user_data.txt");
                     if (!file.exists()) {
@@ -151,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(RegisterActivity.this, "Register failed.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Register unsuccessful.", Toast.LENGTH_SHORT).show();
             return false;
         }
     }

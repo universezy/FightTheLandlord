@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btnLogin:
                 UserID = metID.getText().toString();
                 UserPassword = metPassword.getText().toString();
-
+                if (UserID.equals("") || UserPassword.equals("")) break;
                 File file = new File(this.getFilesDir(), "user_data.txt");
                 if (!file.exists()) {
                     Toast.makeText(LoginActivity.this, "No user data file found.\nPlease register firstly", Toast.LENGTH_SHORT).show();

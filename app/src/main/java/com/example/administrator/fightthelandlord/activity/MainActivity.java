@@ -2,7 +2,6 @@ package com.example.administrator.fightthelandlord.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mbtnQuit, mbtnLogout, mbtnNew, mbtnContinue;
     private ImageView mivPortrait;
 
-    private Handler MainHandler = new Handler();
     //用户数据
     private String UserID, UserName, UserLevel, UserRecord_win, UserRecord_lose;
 
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void InitUserData(String userID) {
         final String userid = userID;
-        MainHandler.post(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 File UserFile = new File(MainActivity.this.getFilesDir(), userid + "_user_data.xml");
@@ -155,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btnNew:
                 Intent intentNew = new Intent(MainActivity.this, PlayActivity.class);
+                intentNew.putExtra("UserID", UserID);
                 startActivity(intentNew);
                 break;
             case R.id.btnContinue:
@@ -176,5 +175,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
-
 }

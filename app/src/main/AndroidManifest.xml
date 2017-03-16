@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.administrator.fightthelandlord">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -29,6 +29,14 @@
         <activity
             android:name=".activity.PlayActivity"
             android:screenOrientation="landscape" />
+
+        <service
+            android:name=".service.PlayService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver android:name=".activity.PlayActivity$PlayActivityReceiver" />
+        <receiver android:name=".service.PlayService$PlayServiceReceiver"/>
     </application>
 
 </manifest>
