@@ -27,11 +27,11 @@
             android:text="Name"
             android:textSize="30dp" />
 
+
         <TextView
             android:id="@+id/tvLevel"
             android:layout_width="160dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
             android:gravity="center"
             android:text="Level"
             android:textSize="30dp" />
@@ -52,11 +52,12 @@
             android:text="Record"
             android:textSize="30dp" />
 
+
+
         <TextView
             android:id="@+id/tvWinRate"
             android:layout_width="160dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
             android:gravity="center"
             android:text="Win Rate"
             android:textSize="30dp" />

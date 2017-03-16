@@ -1,4 +1,4 @@
-package com.example.administrator.fightthelandlord;
+package com.example.administrator.fightthelandlord.view;
 
 import android.content.Context;
 import android.graphics.Canvas;

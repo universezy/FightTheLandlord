@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/silver"
     android:orientation="vertical"
-    tools:context="com.example.administrator.fightthelandlord.PlayActivity">
+    tools:context="com.example.administrator.fightthelandlord.activity.PlayActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,7 +102,7 @@
                 android:background="@color/sienna"
                 android:orientation="vertical">
 
-                <com.example.administrator.fightthelandlord.TableView
+                <com.example.administrator.fightthelandlord.view.TableView
                     android:id="@+id/vTable"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

@@ -1,4 +1,4 @@
-package com.example.administrator.fightthelandlord;
+package com.example.administrator.fightthelandlord.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.administrator.fightthelandlord.R;
+import com.example.administrator.fightthelandlord.view.TableView;
 
 public class PlayActivity extends AppCompatActivity implements View.OnClickListener {
     private Button mbtnBack, mbtnPass, mbtnHint, mbtnPlay;
