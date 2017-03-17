@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     UserRecord_win = xmlPullParser.nextText();
                                 } else if (tagName.equals("record_lose")) {
                                     UserRecord_lose = xmlPullParser.nextText();
-                                    mtvRecord.setText("Win" + UserRecord_win + "Lose" + UserRecord_lose);
+                                    mtvRecord.setText("Win " + UserRecord_win + " Lose " + UserRecord_lose);
                                     // 创建一个数值格式化对象
                                     NumberFormat numberFormat = NumberFormat.getInstance();
                                     // 设置精确到小数点后2位

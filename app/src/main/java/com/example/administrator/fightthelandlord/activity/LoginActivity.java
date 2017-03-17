@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.administrator.fightthelandlord.R;
+import com.example.administrator.fightthelandlord.tool.TransmitFlag;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,6 +18,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * 登录
+ **/
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText metID, metPassword;
     private Button mbtnRegister, mbtnLogin;
@@ -32,6 +36,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         InitLayout();
     }
 
+    /**
+     * 初始化布局
+     **/
     private void InitLayout() {
         metID = (EditText) findViewById(R.id.etID);
         metPassword = (EditText) findViewById(R.id.etPassword);
@@ -59,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void run() {
                                 Intent intentLogin = new Intent(LoginActivity.this, MainActivity.class);
-                                intentLogin.putExtra("UserID", UserID);
+                                intentLogin.putExtra(TransmitFlag.UserID, UserID);
                                 startActivity(intentLogin);
                                 LoginActivity.this.finish();
                             }
@@ -76,6 +83,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /**
+     * 登录校验
+     **/
     private boolean Check(File file) {
         try {
             FileReader fr = new FileReader(file);
@@ -86,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (indexID > 0) {
                     if (strReadLine.substring(0, indexID).equals(UserID)) {
                         if (strReadLine.substring(indexID + 3).equals(UserPassword)) {
-                            Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Login successful !", Toast.LENGTH_SHORT).show();
                             return true;
                         }
                         Toast.makeText(LoginActivity.this, "Wrong password.", Toast.LENGTH_SHORT).show();

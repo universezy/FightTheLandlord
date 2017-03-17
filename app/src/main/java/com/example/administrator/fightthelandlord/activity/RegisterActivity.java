@@ -21,6 +21,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * 注册
+ **/
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private Button mbtnBack, mbtnRegister;
     private EditText metName, metID, metPassword, metConfirm;
@@ -36,6 +39,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         InitLayout();
     }
 
+    /**
+     * 初始化布局
+     **/
     private void InitLayout() {
         mbtnBack = (Button) findViewById(R.id.btnBack);
         mbtnBack.setOnClickListener(this);
@@ -88,7 +94,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-
+    /**
+     * 用户数据存档
+     **/
     private boolean Save(File file) {
         try {
             FileReader fr1 = new FileReader(file);

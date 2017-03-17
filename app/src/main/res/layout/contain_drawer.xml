@@ -50,7 +50,7 @@
             android:layout_marginRight="10dp"
             android:gravity="center"
             android:text="Record"
-            android:textSize="30dp" />
+            android:textSize="25dp" />
 
 
 

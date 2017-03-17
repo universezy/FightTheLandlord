@@ -7,6 +7,9 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
+/**
+ * 自定义画板
+ **/
 public class TableView extends View {
     public String stringContent = "";
 
