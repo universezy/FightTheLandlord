@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.fightthelandlord.R;
+import com.example.administrator.fightthelandlord.tool.TransmitFlag;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -35,12 +36,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        UserID = getIntent().getStringExtra("UserID");
+        UserID = getIntent().getStringExtra(TransmitFlag.UserID);
 
         InitLayout();
-        InitUserData(UserID);
+        InitUserData();
     }
 
+    /**
+     * 初始化布局
+     **/
     private void InitLayout() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -62,12 +66,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mivPortrait.setOnClickListener(this);
     }
 
-    private void InitUserData(String userID) {
-        final String userid = userID;
+    /**
+     * 初始化用户数据
+     **/
+    private void InitUserData() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                File UserFile = new File(MainActivity.this.getFilesDir(), userid + "_user_data.xml");
+                Log.e("InitUserData","InitUserData");
+                File UserFile = new File(MainActivity.this.getFilesDir(), UserID + "_user_data.xml");
                 try {
                     FileInputStream is = new FileInputStream(UserFile);
                     //调用我们定义  解析xml的业务方法
@@ -97,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     UserRecord_win = xmlPullParser.nextText();
                                 } else if (tagName.equals("record_lose")) {
                                     UserRecord_lose = xmlPullParser.nextText();
-                                    mtvRecord.setText("胜" + UserRecord_win + "负" + UserRecord_lose);
+                                    mtvRecord.setText("Win" + UserRecord_win + "Lose" + UserRecord_lose);
                                     // 创建一个数值格式化对象
                                     NumberFormat numberFormat = NumberFormat.getInstance();
                                     // 设置精确到小数点后2位
@@ -133,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
             }
-        });
+        }).start();
     }
 
     /**
@@ -153,11 +160,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btnNew:
                 Intent intentNew = new Intent(MainActivity.this, PlayActivity.class);
-                intentNew.putExtra("UserID", UserID);
+                intentNew.putExtra(TransmitFlag.StartType,TransmitFlag.NewGame);
+                intentNew.putExtra(TransmitFlag.UserID, UserID);
                 startActivity(intentNew);
                 break;
             case R.id.btnContinue:
                 Intent intentContinue = new Intent(MainActivity.this, PlayActivity.class);
+                intentContinue.putExtra(TransmitFlag.StartType,TransmitFlag.ContinueGame);
+                intentContinue.putExtra(TransmitFlag.UserID, UserID);
                 startActivity(intentContinue);
                 break;
             case R.id.btnQuit:
