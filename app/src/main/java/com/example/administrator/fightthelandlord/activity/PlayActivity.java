@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -44,10 +43,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     //用户数据
     private String UserID = "";
     //本局信息
-    private String Landlord = "", Countdown = "", NowPlayer = "";
-    //剩余卡牌
-    private ArrayList<String> ArrayCardComputer1 = new ArrayList<>();
-    private ArrayList<String> ArrayCardComputer2 = new ArrayList<>();
+    private String Landlord = "", NowPlayer = "";
+    //玩家手牌
     private ArrayList<String> ArrayCardPlayer = new ArrayList<>();
 
     @Override
@@ -78,6 +75,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 registerReceiver(playActivityReceiver, intentFilter);
                 //绑定服务
                 Intent intent = new Intent(PlayActivity.this, PlayService.class);
+                intent.putExtra(TransmitFlag.UserID, UserID);
                 intent.putExtra(TransmitFlag.StartType, StartType);
                 bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
             }
@@ -141,12 +139,11 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //TODO
-                                Intent intent_Save = new Intent(TransmitFlag.PlayService);
+                                Intent intent_Save = new Intent(TransmitFlag.PlayActivity);
                                 intent_Save.putExtra(TransmitFlag.State, TransmitFlag.Save);
                                 sendBroadcast(intent_Save);
                                 dialog.dismiss();
                                 PlayActivity.this.finish();
-                                return;
                             }
                         })
                         .setNeutralButton("Don't", new DialogInterface.OnClickListener() {
@@ -180,9 +177,15 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             String strState = intent.getStringExtra(TransmitFlag.State);
-            Log.e("PlayActivityReceiver", strState + "");
             switch (strState) {
-
+                case TransmitFlag.NowTurn:
+                    ArrayList<String> ArrayNowCards = intent.getStringArrayListExtra(TransmitFlag.NowCards);
+                    NowPlayer = intent.getStringExtra(TransmitFlag.NowPlayer);
+                    mvTable.setContent(NowPlayer);
+                    mvTable.invalidate();
+                    break;
+                case TransmitFlag.PlayerCards:
+                    ArrayCardPlayer = intent.getStringArrayListExtra(TransmitFlag.PlayerCards);
                 default:
                     break;
             }

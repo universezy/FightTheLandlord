@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.e("InitUserData","InitUserData");
                 File UserFile = new File(MainActivity.this.getFilesDir(), UserID + "_user_data.xml");
                 try {
                     FileInputStream is = new FileInputStream(UserFile);
