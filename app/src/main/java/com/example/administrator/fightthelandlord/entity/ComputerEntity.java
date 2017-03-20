@@ -1,5 +1,7 @@
 package com.example.administrator.fightthelandlord.entity;
 
+import android.util.Log;
+
 import com.example.administrator.fightthelandlord.tool.CardUtil;
 
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ public class ComputerEntity extends CustomEntity {
 
         for (String chooseCard : chooseCards) {
             int index = ArrayCard.indexOf(chooseCard);
-            chooseCards.add(chooseCard);
             ArrayCard.remove(index);
         }
         return chooseCards;

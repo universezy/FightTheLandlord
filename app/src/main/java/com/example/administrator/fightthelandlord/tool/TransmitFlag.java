@@ -24,6 +24,6 @@ public class TransmitFlag {
     public static final String NowCards ="NowCards";
     public static final String PlayerCards ="PlayerCards";
     public static final String ChooseCards ="ChooseCards";
-
+    public static final String UpdateUserData ="UpdateUserData";
 
 }

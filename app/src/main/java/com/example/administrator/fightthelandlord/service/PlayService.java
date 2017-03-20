@@ -171,7 +171,6 @@ public class PlayService extends Service {
      * 初始化玩家
      **/
     private void InitPlayer() {
-        Log.e("InitPlayer", "InitPlayer");
         computer1Entity = new ComputerEntity(TransmitFlag.Computer1);
         computer2Entity = new ComputerEntity(TransmitFlag.Computer2);
         playerEntity = new PlayerEntity(TransmitFlag.Player);
@@ -181,7 +180,6 @@ public class PlayService extends Service {
      * 初始化卡牌
      **/
     private void InitCard() {
-        Log.e("InitCard", "InitCard");
         for (int i = 0; i < 4; i++) {
             ArrayCardBanker.add("A");
             ArrayCardBanker.add("J");
@@ -202,7 +200,6 @@ public class PlayService extends Service {
      * 初始化地主
      **/
     private void InitLandlord() {
-        Log.e("InitLandlord", "InitLandlord");
         Random random = new Random();
         switch (random.nextInt(3)) {
             case 0:
@@ -223,7 +220,6 @@ public class PlayService extends Service {
      * 洗牌
      **/
     private void ShuffleCard() {
-        Log.e("ShuffleCard", "ShuffleCard");
         Random random = new Random();
         for (int i = 0; i < 54; i++) {
             int tempIndex = random.nextInt(54);
@@ -241,7 +237,6 @@ public class PlayService extends Service {
      * 随机发牌
      **/
     private void DistributeCard() {
-        Log.e("DistributeCard", "DistributeCard");
         for (int i = 0; i < 17; i++) {
             computer1Entity.AddCard(ArrayCardBanker.get(i * 3));
             computer2Entity.AddCard(ArrayCardBanker.get(i * 3 + 1));
@@ -261,8 +256,8 @@ public class PlayService extends Service {
             playerEntity.AddCard(ArrayCardBanker.get(53));
         }
         computer1Entity.setArrayCard(SortByWeight(computer1Entity.getArrayCard()));
-        computer1Entity.setArrayCard(SortByWeight(computer2Entity.getArrayCard()));
-        computer1Entity.setArrayCard(SortByWeight(playerEntity.getArrayCard()));
+        computer2Entity.setArrayCard(SortByWeight(computer2Entity.getArrayCard()));
+        playerEntity.setArrayCard(SortByWeight(playerEntity.getArrayCard()));
 
         Intent intent_PlayerCards = new Intent(TransmitFlag.PlayService);
         intent_PlayerCards.putExtra(TransmitFlag.State, TransmitFlag.PlayerCards);
@@ -326,16 +321,11 @@ public class PlayService extends Service {
 
         Intent intentNowCards = new Intent(TransmitFlag.PlayService);
         intentNowCards.putExtra(TransmitFlag.State, TransmitFlag.NowTurn);
-        //   intentNowCards.putExtra(TransmitFlag.NowCards, ArrayNowCards);
-        intentNowCards.putExtra(TransmitFlag.NowPlayer, NowPlayer);
+        intentNowCards.putExtra(TransmitFlag.NowCards, ArrayNowCards);
+        // intentNowCards.putExtra(TransmitFlag.NowPlayer, NowPlayer);
         sendBroadcast(intentNowCards);
 
         if (customEntity.getArrayCard().size() == 0) {
-            Log.e("TurnEnd", "TurnEnd");
-            Log.e("Victor", NowPlayer);
-            Log.e("computer1 rest cards ", computer1Entity.getArrayCard().size()+"");
-            Log.e("computer2 rest cards", computer2Entity.getArrayCard().size()+"");
-            Log.e("player rest cards", playerEntity.getArrayCard().size()+"");
             TurnEnd = true;
             ShowResult();
             UpdateUserDate();
@@ -370,7 +360,6 @@ public class PlayService extends Service {
      * 新游戏
      **/
     private void Play() {
-        Log.e("Play", "Play");
         InitLandlord();
         ShuffleCard();
         DistributeCard();
@@ -384,6 +373,7 @@ public class PlayService extends Service {
                 break;
             case TransmitFlag.Player:
                 CyclicFight(playerEntity, computer1Entity, computer2Entity);
+                break;
             default:
                 break;
         }
@@ -412,14 +402,28 @@ public class PlayService extends Service {
      * 显示结果
      **/
     private void ShowResult() {
-
+        Log.e("TurnEnd", "TurnEnd");
+        Log.e("Victor", NowPlayer);
+        Log.e("computer1 rest cards ", computer1Entity.getArrayCard().size() + "");
+        Log.e("computer2 rest cards", computer2Entity.getArrayCard().size() + "");
+        Log.e("player rest cards", playerEntity.getArrayCard().size() + "");
+        Toast.makeText(getApplicationContext(), NowPlayer + " win!", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * 更新用户数据
      **/
     private void UpdateUserDate() {
-
+        Intent intent_Update = new Intent(TransmitFlag.PlayService);
+        intent_Update.putExtra(TransmitFlag.State, TransmitFlag.UpdateUserData);
+        if (NowPlayer.equals(playerEntity.getName())) {
+            intent_Update.putExtra("Win", true);
+        } else if (NowPlayer.equals(Landlord)) {
+            intent_Update.putExtra("Win", false);
+        } else {
+            intent_Update.putExtra("Win", true);
+        }
+        sendBroadcast(intent_Update);
     }
 
     /**

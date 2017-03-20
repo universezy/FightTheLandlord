@@ -1,6 +1,9 @@
 package com.example.administrator.fightthelandlord.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //用户数据
     private String UserID, UserName, UserLevel, UserRecord_win, UserRecord_lose;
 
+    private MainActivityReceiver mainActivityReceiver = new MainActivityReceiver();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +45,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         InitLayout();
         InitUserData();
+
+        //注册接收器
+        IntentFilter intentFilter = new IntentFilter(TransmitFlag.PlayService);
+        registerReceiver(mainActivityReceiver, intentFilter);
     }
 
     /**
@@ -159,13 +168,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btnNew:
                 Intent intentNew = new Intent(MainActivity.this, PlayActivity.class);
-                intentNew.putExtra(TransmitFlag.StartType,TransmitFlag.NewGame);
+                intentNew.putExtra(TransmitFlag.StartType, TransmitFlag.NewGame);
                 intentNew.putExtra(TransmitFlag.UserID, UserID);
                 startActivity(intentNew);
                 break;
             case R.id.btnContinue:
                 Intent intentContinue = new Intent(MainActivity.this, PlayActivity.class);
-                intentContinue.putExtra(TransmitFlag.StartType,TransmitFlag.ContinueGame);
+                intentContinue.putExtra(TransmitFlag.StartType, TransmitFlag.ContinueGame);
                 intentContinue.putExtra(TransmitFlag.UserID, UserID);
                 startActivity(intentContinue);
                 break;
@@ -182,6 +191,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * 接收器
+     **/
+    class MainActivityReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String strState = intent.getStringExtra(TransmitFlag.State);
+            switch (strState) {
+                case TransmitFlag.UpdateUserData:
+                    boolean Win = intent.getBooleanExtra("Win", false);
+                    if (Win) {
+                        UserRecord_win = Integer.parseInt(UserRecord_win) + 1 + "";
+                    } else {
+                        UserRecord_lose = Integer.parseInt(UserRecord_lose) + 1 + "";
+                    }
+                    mtvRecord.setText("Win " + UserRecord_win + " Lose " + UserRecord_lose);
+                    // 创建一个数值格式化对象
+                    NumberFormat numberFormat = NumberFormat.getInstance();
+                    // 设置精确到小数点后2位
+                    numberFormat.setMaximumFractionDigits(2);
+                    float rate;
+                    int total = Integer.parseInt(UserRecord_win) + Integer.parseInt(UserRecord_lose);
+                    if (total == 0) {
+                        rate = 0;
+                    } else {
+                        rate = (float) Integer.parseInt(UserRecord_win) / (float) total * 100;
+                    }
+                    mtvWinRate.setText(numberFormat.format(rate) + "%");
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

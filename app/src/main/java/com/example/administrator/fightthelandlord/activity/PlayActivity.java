@@ -164,8 +164,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.btnPlay:
-                mvTable.setContent("test");
-                mvTable.invalidate();
+
                 break;
             default:
                 break;
@@ -198,9 +197,9 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             String strState = intent.getStringExtra(TransmitFlag.State);
             switch (strState) {
                 case TransmitFlag.NowTurn:
-                //    ArrayList<String> ArrayNowCards = intent.getStringArrayListExtra(TransmitFlag.NowCards);
+                    ArrayList<String> ArrayNowCards = intent.getStringArrayListExtra(TransmitFlag.NowCards);
                     NowPlayer = intent.getStringExtra(TransmitFlag.NowPlayer);
-                    mvTable.setContent(NowPlayer);
+                    mvTable.setContent(ArrayNowCards);
                     mvTable.invalidate();
                     break;
                 case TransmitFlag.PlayerCards:

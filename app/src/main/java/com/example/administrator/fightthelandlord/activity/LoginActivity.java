@@ -54,10 +54,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnLogin:
-            //    UserID = metID.getText().toString();
-            //    UserPassword = metPassword.getText().toString();
-                UserID="1";
-                UserPassword="2";
+                //    UserID = metID.getText().toString();
+                //    UserPassword = metPassword.getText().toString();
+                UserID = "1";
+                UserPassword = "1";
 
                 if (UserID.equals("") || UserPassword.equals("")) break;
                 File file = new File(this.getFilesDir(), "user_data.txt");

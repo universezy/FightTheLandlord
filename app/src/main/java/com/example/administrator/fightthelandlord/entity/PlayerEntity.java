@@ -35,7 +35,6 @@ public class PlayerEntity extends CustomEntity {
 
         for (String chooseCard : chooseCards) {
             int index = ArrayCard.indexOf(chooseCard);
-            chooseCards.add(chooseCard);
             ArrayCard.remove(index);
         }
         return chooseCards;
