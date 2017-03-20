@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.util.Xml;
@@ -34,6 +35,8 @@ import java.util.Random;
 public class PlayService extends Service {
     //接收器
     protected PlayServiceReceiver playServiceReceiver = new PlayServiceReceiver();
+    //处理器
+    private Handler handleService = new Handler();
     //启动类型
     private String StartType;
     //用户数据
@@ -46,6 +49,8 @@ public class PlayService extends Service {
     private ArrayList<String> RestCardPlayer = new ArrayList<>();
     //回合结束标识
     private boolean TurnEnd = true;
+    //无接牌回合数
+    private int Count = 0;
     //底牌
     private ArrayList<String> ArrayCardBanker = new ArrayList<>();
     //场牌
@@ -166,6 +171,7 @@ public class PlayService extends Service {
      * 初始化玩家
      **/
     private void InitPlayer() {
+        Log.e("InitPlayer", "InitPlayer");
         computer1Entity = new ComputerEntity(TransmitFlag.Computer1);
         computer2Entity = new ComputerEntity(TransmitFlag.Computer2);
         playerEntity = new PlayerEntity(TransmitFlag.Player);
@@ -175,6 +181,7 @@ public class PlayService extends Service {
      * 初始化卡牌
      **/
     private void InitCard() {
+        Log.e("InitCard", "InitCard");
         for (int i = 0; i < 4; i++) {
             ArrayCardBanker.add("A");
             ArrayCardBanker.add("J");
@@ -195,6 +202,7 @@ public class PlayService extends Service {
      * 初始化地主
      **/
     private void InitLandlord() {
+        Log.e("InitLandlord", "InitLandlord");
         Random random = new Random();
         switch (random.nextInt(3)) {
             case 0:
@@ -215,6 +223,7 @@ public class PlayService extends Service {
      * 洗牌
      **/
     private void ShuffleCard() {
+        Log.e("ShuffleCard", "ShuffleCard");
         Random random = new Random();
         for (int i = 0; i < 54; i++) {
             int tempIndex = random.nextInt(54);
@@ -232,6 +241,7 @@ public class PlayService extends Service {
      * 随机发牌
      **/
     private void DistributeCard() {
+        Log.e("DistributeCard", "DistributeCard");
         for (int i = 0; i < 17; i++) {
             computer1Entity.AddCard(ArrayCardBanker.get(i * 3));
             computer2Entity.AddCard(ArrayCardBanker.get(i * 3 + 1));
@@ -278,39 +288,62 @@ public class PlayService extends Service {
      * 循环进行游戏
      **/
     private void CyclicFight(CustomEntity customEntity1, CustomEntity customEntity2, CustomEntity customEntity3) {
+        final CustomEntity Entity1 = customEntity1;
+        final CustomEntity Entity2 = customEntity2;
+        final CustomEntity Entity3 = customEntity3;
         if (!TurnEnd) {
-            ArrayNowCards = Fight(customEntity1);
+            Fight(customEntity1);
+            handleService.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    CyclicFight(Entity2, Entity3, Entity1);
+                }
+            }, 2000);
         }
-        if (!TurnEnd) {
-            ArrayNowCards = Fight(customEntity2);
-        }
-        if (!TurnEnd) {
-            ArrayNowCards = Fight(customEntity3);
-        }
-        ShowResult();
-        UpdateUserDate();
     }
 
     /**
      * 单个回合
      **/
-    private ArrayList<String> Fight(CustomEntity customEntity) {
+    private void Fight(CustomEntity customEntity) {
+        Log.e("Fight", "Fight----------------------");
         NowPlayer = customEntity.getName();
-        ArrayList<String> returnArray = customEntity.PlayCard(ArrayNowCards);
+        if (Count == 2) {
+            ArrayNowCards.clear();
+            Count = 0;
+        }
+        Log.e("ArrayNowCards", ArrayNowCards.size() == 0 ? "null" : ArrayNowCards.get(0));
+        Log.e("NowPlayer", NowPlayer);
+
+        ArrayList<String> arrayList = customEntity.PlayCard(ArrayNowCards);
+        if (arrayList.size() != 0) {
+            ArrayNowCards = arrayList;
+            Count = 0;
+            Log.e("ChooseCards", ArrayNowCards.get(0));
+        } else {
+            Count++;
+        }
+
         Intent intentNowCards = new Intent(TransmitFlag.PlayService);
         intentNowCards.putExtra(TransmitFlag.State, TransmitFlag.NowTurn);
-        intentNowCards.putExtra(TransmitFlag.NowCards, ArrayNowCards);
+        //   intentNowCards.putExtra(TransmitFlag.NowCards, ArrayNowCards);
         intentNowCards.putExtra(TransmitFlag.NowPlayer, NowPlayer);
         sendBroadcast(intentNowCards);
 
         if (customEntity.getArrayCard().size() == 0) {
+            Log.e("TurnEnd", "TurnEnd");
+            Log.e("Victor", NowPlayer);
+            Log.e("computer1 rest cards ", computer1Entity.getArrayCard().size()+"");
+            Log.e("computer2 rest cards", computer2Entity.getArrayCard().size()+"");
+            Log.e("player rest cards", playerEntity.getArrayCard().size()+"");
             TurnEnd = true;
+            ShowResult();
+            UpdateUserDate();
             Intent intentTurnEnd = new Intent(TransmitFlag.PlayService);
             intentTurnEnd.putExtra(TransmitFlag.State, TransmitFlag.TurnEnd);
             intentTurnEnd.putExtra(TransmitFlag.Victor, NowPlayer);
             sendBroadcast(intentTurnEnd);
         }
-        return returnArray;
     }
 
     /**
@@ -337,6 +370,7 @@ public class PlayService extends Service {
      * 新游戏
      **/
     private void Play() {
+        Log.e("Play", "Play");
         InitLandlord();
         ShuffleCard();
         DistributeCard();

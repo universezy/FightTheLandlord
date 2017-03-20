@@ -106,7 +106,7 @@
                     android:id="@+id/vTable"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="5"/>
+                    android:layout_weight="5" />
 
                 <LinearLayout
                     android:id="@+id/llButton"
@@ -118,7 +118,7 @@
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2"/>
+                        android:layout_weight="2" />
 
                     <Button
                         android:id="@+id/btnPass"
@@ -126,13 +126,13 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:textSize="10dp"
-                        android:text="PASS"/>
+                        android:text="PASS"
+                        android:textSize="10dp" />
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                     <Button
                         android:id="@+id/btnHint"
@@ -140,12 +140,13 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:textSize="10dp"
-                        android:text="HINT"/>
+                        android:text="HINT"
+                        android:textSize="10dp" />
+
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                     <Button
                         android:id="@+id/btnPlay"
@@ -153,13 +154,13 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:textSize="10dp"
-                        android:text="PLAY"/>
+                        android:text="PLAY"
+                        android:textSize="10dp" />
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2"/>
+                        android:layout_weight="2" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -214,10 +215,55 @@
                 android:text="Rest"
                 android:textSize="30dp" />
 
-            <LinearLayout
+            <HorizontalScrollView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3.02" />
+                android:layout_marginTop="10dp"
+                android:layout_weight="3">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="@drawable/divider2"
+                    android:orientation="horizontal"
+                    android:showDividers="middle|beginning|end">
+
+                    <include
+                        layout="@layout/item_card"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+                    <include
+                        layout="@layout/item_card"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+                    <include
+                        layout="@layout/item_card"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+                    <include
+                        layout="@layout/item_card"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+                    <include
+                        layout="@layout/item_card"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+                    <include
+                        layout="@layout/item_card"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+                    <include
+                        layout="@layout/item_card"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+                    <include
+                        layout="@layout/item_card"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/tvWordsPlayer"

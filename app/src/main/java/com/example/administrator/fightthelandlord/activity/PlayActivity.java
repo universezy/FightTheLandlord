@@ -35,6 +35,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private TableView mvTable;
     private LinearLayout mllComputer1, mllComputer2, mllPlayer, mllButton;
 
+    public static PlayActivity playActivity;
     private Handler PlayHandler = new Handler();
     protected PlayService.ServiceBinder binder;
     protected PlayActivityReceiver playActivityReceiver = new PlayActivityReceiver();
@@ -50,6 +51,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.playActivity = this;
         setContentView(R.layout.activity_play);
         UserID = getIntent().getStringExtra(TransmitFlag.UserID);
         final String StartType = getIntent().getStringExtra(TransmitFlag.StartType);
@@ -171,6 +173,23 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 选牌
+     **/
+    public ArrayList<String> ChooseCards(ArrayList<String> cards) {
+        ArrayList<String> chooseCards = new ArrayList<>();
+        mllButton.setVisibility(View.VISIBLE);
+        //实现选牌
+        for (String chooseCard : chooseCards) {
+            int index = ArrayCardPlayer.indexOf(chooseCard);
+            chooseCards.add(chooseCard);
+            ArrayCardPlayer.remove(index);
+        }
+
+        return chooseCards;
+    }
+
+
+    /**
      * 接收器
      **/
     class PlayActivityReceiver extends BroadcastReceiver {
@@ -179,13 +198,18 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             String strState = intent.getStringExtra(TransmitFlag.State);
             switch (strState) {
                 case TransmitFlag.NowTurn:
-                    ArrayList<String> ArrayNowCards = intent.getStringArrayListExtra(TransmitFlag.NowCards);
+                //    ArrayList<String> ArrayNowCards = intent.getStringArrayListExtra(TransmitFlag.NowCards);
                     NowPlayer = intent.getStringExtra(TransmitFlag.NowPlayer);
                     mvTable.setContent(NowPlayer);
                     mvTable.invalidate();
                     break;
                 case TransmitFlag.PlayerCards:
                     ArrayCardPlayer = intent.getStringArrayListExtra(TransmitFlag.PlayerCards);
+
+                    break;
+                case TransmitFlag.TurnEnd:
+
+                    break;
                 default:
                     break;
             }
