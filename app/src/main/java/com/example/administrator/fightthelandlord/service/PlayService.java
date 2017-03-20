@@ -68,6 +68,8 @@ public class PlayService extends Service {
 
         InitPlayer();
         InitCard();
+
+
     }
 
     @Override
@@ -95,6 +97,7 @@ public class PlayService extends Service {
 
     @Override
     public void onDestroy() {
+        TurnEnd = true;
         unregisterReceiver(playServiceReceiver);
         super.onDestroy();
     }
@@ -103,68 +106,63 @@ public class PlayService extends Service {
      * 继续游戏时读取上局信息
      **/
     private void InitUserProgress() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                File UserFile = new File(getFilesDir(), UserID + "_user_progress.xml");
-                try {
-                    FileInputStream is = new FileInputStream(UserFile);
-                    //调用我们定义  解析xml的业务方法
-                    XmlPullParser xmlPullParser = Xml.newPullParser();
-                    xmlPullParser.setInput(is, "utf-8");
-                    //开始解析事件
-                    int eventType = xmlPullParser.getEventType();
-                    //处理事件，不碰到文档结束就一直处理
-                    while (eventType != XmlPullParser.END_DOCUMENT) {
-                        Log.e("eventType", eventType + "");
-                        //因为定义了一堆静态常量，所以这里可以用switch
-                        switch (eventType) {
-                            case XmlPullParser.START_DOCUMENT:
-                                // 不做任何操作或初始化数据
-                                break;
-                            case XmlPullParser.START_TAG:
-                                // 解析XML节点数据
-                                // 获取当前标签名字
-                                String tagName = xmlPullParser.getName();
-                                if (tagName.equals("landlord")) {
-                                    Landlord = xmlPullParser.nextText();
-                                } else if (tagName.equals("nowplayer")) {
-                                    NowPlayer = xmlPullParser.nextText();
-                                } else if (tagName.equals("computer1")) {
-                                    RestCardComputer1.clear();
-                                    for (int i = 0; i < xmlPullParser.getAttributeCount(); i++) {
-                                        RestCardComputer1.add(xmlPullParser.getAttributeValue(i));
-                                    }
-                                } else if (tagName.equals("computer2")) {
-                                    RestCardComputer2.clear();
-                                    for (int i = 0; i < xmlPullParser.getAttributeCount(); i++) {
-                                        RestCardComputer2.add(xmlPullParser.getAttributeValue(i));
-                                    }
-                                } else if (tagName.equals("player")) {
-                                    RestCardPlayer.clear();
-                                    for (int i = 0; i < xmlPullParser.getAttributeCount(); i++) {
-                                        RestCardPlayer.add(xmlPullParser.getAttributeValue(i));
-                                    }
-                                }
-                                break;
-                            case XmlPullParser.TEXT:
-                                String text = xmlPullParser.getText();
-                                Log.e(text, xmlPullParser.getText() + "");
-                                break;
-                            case XmlPullParser.END_TAG:
-                                // 单节点完成，可往集合里边添加新的数据
-                                break;
-                            default:
-                                break;
+        File UserFile = new File(getFilesDir(), UserID + "_user_progress.xml");
+        try {
+            FileInputStream is = new FileInputStream(UserFile);
+            //调用我们定义  解析xml的业务方法
+            XmlPullParser xmlPullParser = Xml.newPullParser();
+            xmlPullParser.setInput(is, "utf-8");
+            //开始解析事件
+            int eventType = xmlPullParser.getEventType();
+            //处理事件，不碰到文档结束就一直处理
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                Log.e("eventType", eventType + "");
+                //因为定义了一堆静态常量，所以这里可以用switch
+                switch (eventType) {
+                    case XmlPullParser.START_DOCUMENT:
+                        // 不做任何操作或初始化数据
+                        break;
+                    case XmlPullParser.START_TAG:
+                        // 解析XML节点数据
+                        // 获取当前标签名字
+                        String tagName = xmlPullParser.getName();
+                        if (tagName.equals("landlord")) {
+                            Landlord = xmlPullParser.nextText();
+                        } else if (tagName.equals("nowplayer")) {
+                            NowPlayer = xmlPullParser.nextText();
+                        } else if (tagName.equals("computer1")) {
+                            RestCardComputer1.clear();
+                            for (int i = 0; i < xmlPullParser.getAttributeCount(); i++) {
+                                RestCardComputer1.add(xmlPullParser.getAttributeValue(i));
+                            }
+                        } else if (tagName.equals("computer2")) {
+                            RestCardComputer2.clear();
+                            for (int i = 0; i < xmlPullParser.getAttributeCount(); i++) {
+                                RestCardComputer2.add(xmlPullParser.getAttributeValue(i));
+                            }
+                        } else if (tagName.equals("player")) {
+                            RestCardPlayer.clear();
+                            for (int i = 0; i < xmlPullParser.getAttributeCount(); i++) {
+                                RestCardPlayer.add(xmlPullParser.getAttributeValue(i));
+                            }
                         }
-                        // 用next方法处理下一个事件
-                        eventType = xmlPullParser.next();
-                    }
-                } catch (XmlPullParserException | IOException e) {
-                    e.printStackTrace();
+                        break;
+                    case XmlPullParser.TEXT:
+                        String text = xmlPullParser.getText();
+                        Log.e(text, xmlPullParser.getText() + "");
+                        break;
+                    case XmlPullParser.END_TAG:
+                        // 单节点完成，可往集合里边添加新的数据
+                        break;
+                    default:
+                        break;
                 }
+                // 用next方法处理下一个事件
+                eventType = xmlPullParser.next();
             }
-        }).start();
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -293,7 +291,7 @@ public class PlayService extends Service {
                 public void run() {
                     CyclicFight(Entity2, Entity3, Entity1);
                 }
-            }, 2000);
+            }, 1000);
         }
     }
 
@@ -384,6 +382,7 @@ public class PlayService extends Service {
      **/
     private void Play(String NowPlayer, ArrayList<String> ArrayCardComputer1, ArrayList<String> ArrayCardComputer2, ArrayList<String> ArrayCardPlayer) {
         DistributeCard(ArrayCardComputer1, ArrayCardComputer2, ArrayCardPlayer);
+        TurnEnd = false;
         switch (NowPlayer) {
             case TransmitFlag.Computer1:
                 CyclicFight(computer1Entity, computer2Entity, playerEntity);
@@ -494,6 +493,7 @@ public class PlayService extends Service {
             String strState = intent.getStringExtra(TransmitFlag.State);
             switch (strState) {
                 case TransmitFlag.Save:
+                    TurnEnd = true;
                     RestCardComputer1 = computer1Entity.getArrayCard();
                     RestCardComputer2 = computer2Entity.getArrayCard();
                     RestCardPlayer = playerEntity.getArrayCard();
