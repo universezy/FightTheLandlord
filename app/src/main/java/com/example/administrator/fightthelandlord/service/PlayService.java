@@ -60,13 +60,13 @@ public class PlayService extends Service {
     //玩家实体
     private PlayerEntity playerEntity;
     //循环顺序
-    private CustomEntity CyclicEntity1,CyclicEntity2,CyclicEntity3;
+    private CustomEntity CyclicEntity1, CyclicEntity2, CyclicEntity3;
 
 
     @Override
     public void onCreate() {
         //注册接收器
-        IntentFilter intentFilter = new IntentFilter(TransmitFlag.PlayActivity);
+        IntentFilter intentFilter = new IntentFilter(TransmitFlag.PlayService);
         registerReceiver(playServiceReceiver, intentFilter);
 
         InitPlayer();
@@ -255,7 +255,7 @@ public class PlayService extends Service {
             playerEntity.AddCard(ArrayCardBanker.get(53));
         }
 
-        DistributeCard(SortByWeight(computer1Entity.getArrayCard()),SortByWeight(computer2Entity.getArrayCard()),SortByWeight(playerEntity.getArrayCard()));
+        DistributeCard(SortByWeight(computer1Entity.getArrayCard()), SortByWeight(computer2Entity.getArrayCard()), SortByWeight(playerEntity.getArrayCard()));
     }
 
     /**
@@ -266,7 +266,7 @@ public class PlayService extends Service {
         computer2Entity.setArrayCard(ArrayCardComputer2);
         playerEntity.setArrayCard(ArrayCardPlayer3);
 
-        Intent intent_PlayerCards = new Intent(TransmitFlag.PlayService);
+        Intent intent_PlayerCards = new Intent(TransmitFlag.PlayActivity);
         intent_PlayerCards.putExtra(TransmitFlag.State, TransmitFlag.PlayerCards);
         intent_PlayerCards.putExtra(TransmitFlag.PlayerCards, playerEntity.getArrayCard());
         intent_PlayerCards.putExtra(TransmitFlag.Landlord, Landlord);
@@ -282,7 +282,6 @@ public class PlayService extends Service {
         CyclicEntity3 = customEntity3;
         if (!TurnEnd) {
             Fight_ChooseCards(CyclicEntity1);
-
         }
     }
 
@@ -290,17 +289,23 @@ public class PlayService extends Service {
      * 单个回合选牌
      **/
     private void Fight_ChooseCards(CustomEntity customEntity) {
-        NowPlayer = customEntity.getName();
         if (Count == 2) {
             ArrayNowCards.clear();
             Count = 0;
         }
+        NowPlayer = customEntity.getName();
+        Intent intent_NowPlayer = new Intent(TransmitFlag.PlayActivity);
+        intent_NowPlayer.putExtra(TransmitFlag.State, TransmitFlag.NowPlayer);
+        intent_NowPlayer.putExtra(TransmitFlag.NowPlayer, NowPlayer);
+        sendBroadcast(intent_NowPlayer);
+
         if (NowPlayer.equals(playerEntity.getName())) {
-            Intent intent_choose = new Intent(TransmitFlag.PlayService);
+            Intent intent_choose = new Intent(TransmitFlag.PlayActivity);
             intent_choose.putExtra(TransmitFlag.State, TransmitFlag.ChooseCards);
+            intent_choose.putExtra(TransmitFlag.ChooseCards, ArrayNowCards);
             sendBroadcast(intent_choose);
-        }else{
-            ArrayList<String>  arrayList = customEntity.PlayCard(ArrayNowCards);
+        } else {
+            ArrayList<String> arrayList = customEntity.PlayCard(ArrayNowCards);
             if (arrayList.size() != 0) {
                 ArrayNowCards = arrayList;
                 Count = 0;
@@ -314,11 +319,10 @@ public class PlayService extends Service {
     /**
      * 单个回合显示牌
      **/
-    private void Fight_NowCards(CustomEntity customEntity){
-        Intent intentNowCards = new Intent(TransmitFlag.PlayService);
-        intentNowCards.putExtra(TransmitFlag.State, TransmitFlag.NowTurn);
+    private void Fight_NowCards(CustomEntity customEntity) {
+        Intent intentNowCards = new Intent(TransmitFlag.PlayActivity);
+        intentNowCards.putExtra(TransmitFlag.State, TransmitFlag.NowCards);
         intentNowCards.putExtra(TransmitFlag.NowCards, ArrayNowCards);
-        intentNowCards.putExtra(TransmitFlag.NowPlayer, NowPlayer);
         intentNowCards.putExtra(TransmitFlag.RestCards, customEntity.getArrayCard().size());
         sendBroadcast(intentNowCards);
 
@@ -326,7 +330,7 @@ public class PlayService extends Service {
             TurnEnd = true;
             ShowResult();
             UpdateUserDate();
-            Intent intentTurnEnd = new Intent(TransmitFlag.PlayService);
+            Intent intentTurnEnd = new Intent(TransmitFlag.PlayActivity);
             intentTurnEnd.putExtra(TransmitFlag.State, TransmitFlag.TurnEnd);
             intentTurnEnd.putExtra(TransmitFlag.Victor, NowPlayer);
             sendBroadcast(intentTurnEnd);
@@ -414,7 +418,7 @@ public class PlayService extends Service {
      * 更新用户数据
      **/
     private void UpdateUserDate() {
-        Intent intent_Update = new Intent(TransmitFlag.PlayService);
+        Intent intent_Update = new Intent(TransmitFlag.MainActivity);
         intent_Update.putExtra(TransmitFlag.State, TransmitFlag.UpdateUserData);
         if (NowPlayer.equals(playerEntity.getName())) {
             intent_Update.putExtra("Win", true);
@@ -492,6 +496,7 @@ public class PlayService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             String strState = intent.getStringExtra(TransmitFlag.State);
+            Log.e("PlayServiceReceiver", "" + strState);
             switch (strState) {
                 case TransmitFlag.Save:
                     TurnEnd = true;
@@ -504,7 +509,7 @@ public class PlayService extends Service {
                         Toast.makeText(getApplicationContext(), "Save unsuccessful.", Toast.LENGTH_SHORT).show();
                     break;
                 case TransmitFlag.ChooseCards:
-                    ArrayList<String>  arrayList = intent.getStringArrayListExtra(TransmitFlag.ChooseCards);
+                    ArrayList<String> arrayList = intent.getStringArrayListExtra(TransmitFlag.ChooseCards);
                     playerEntity.PlayCard(arrayList);
                     if (ArrayNowCards.size() != 0) {
                         ArrayNowCards = arrayList;
