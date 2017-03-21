@@ -51,6 +51,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         registerReceiver(mainActivityReceiver, intentFilter);
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mainActivityReceiver);
+        super.onDestroy();
+    }
+
     /**
      * 初始化布局
      **/

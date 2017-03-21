@@ -27,13 +27,13 @@
             android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/tvTime"
+            android:id="@+id/tvLandlord"
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_gravity="center"
             android:layout_weight="3"
             android:gravity="center"
-            android:text="Time"
+            android:text="Landlord"
             android:textSize="25dp" />
 
         <View
@@ -218,51 +218,20 @@
             <HorizontalScrollView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:divider="@drawable/divider1"
-                android:showDividers="middle|beginning|end"
-                android:focusable="false"
-                android:layout_weight="3">
+                android:layout_marginTop="5dp"
+                android:layout_weight="3"
+                android:focusable="false">
 
                 <LinearLayout
+                    android:id="@+id/llPlayerCards"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/green"
                     android:divider="@drawable/divider2"
                     android:orientation="horizontal"
                     android:showDividers="middle|beginning|end">
 
-                    <include
-                        layout="@layout/item_card"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent" />
-                    <include
-                        layout="@layout/item_card"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent" />
-                    <include
-                        layout="@layout/item_card"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent" />
-                    <include
-                        layout="@layout/item_card"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent" />
-                    <include
-                        layout="@layout/item_card"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent" />
-                    <include
-                        layout="@layout/item_card"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent" />
-                    <include
-                        layout="@layout/item_card"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent" />
-                    <include
-                        layout="@layout/item_card"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent" />
+
                 </LinearLayout>
 
 

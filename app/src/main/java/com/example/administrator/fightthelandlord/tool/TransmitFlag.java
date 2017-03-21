@@ -12,7 +12,6 @@ public class TransmitFlag {
     public static final String ContinueGame = "ContinueGame";
     public static final String UserID = "UserID";
     public static final String Landlord = "Landlord";
-    public static final String Countdown = "Countdown";
     public static final String NowPlayer = "NowPlayer";
     public static final String Computer1 = "Computer1";
     public static final String Computer2 = "Computer2";
@@ -25,5 +24,5 @@ public class TransmitFlag {
     public static final String PlayerCards ="PlayerCards";
     public static final String ChooseCards ="ChooseCards";
     public static final String UpdateUserData ="UpdateUserData";
-
+    public static final String RestCards ="RestCards";
 }

@@ -59,6 +59,9 @@ public class PlayService extends Service {
     private ComputerEntity computer1Entity, computer2Entity;
     //玩家实体
     private PlayerEntity playerEntity;
+    //循环顺序
+    private CustomEntity CyclicEntity1,CyclicEntity2,CyclicEntity3;
+
 
     @Override
     public void onCreate() {
@@ -68,8 +71,6 @@ public class PlayService extends Service {
 
         InitPlayer();
         InitCard();
-
-
     }
 
     @Override
@@ -253,14 +254,8 @@ public class PlayService extends Service {
             playerEntity.AddCard(ArrayCardBanker.get(52));
             playerEntity.AddCard(ArrayCardBanker.get(53));
         }
-        computer1Entity.setArrayCard(SortByWeight(computer1Entity.getArrayCard()));
-        computer2Entity.setArrayCard(SortByWeight(computer2Entity.getArrayCard()));
-        playerEntity.setArrayCard(SortByWeight(playerEntity.getArrayCard()));
 
-        Intent intent_PlayerCards = new Intent(TransmitFlag.PlayService);
-        intent_PlayerCards.putExtra(TransmitFlag.State, TransmitFlag.PlayerCards);
-        intent_PlayerCards.putExtra(TransmitFlag.PlayerCards, playerEntity.getArrayCard());
-        sendBroadcast(intent_PlayerCards);
+        DistributeCard(SortByWeight(computer1Entity.getArrayCard()),SortByWeight(computer2Entity.getArrayCard()),SortByWeight(playerEntity.getArrayCard()));
     }
 
     /**
@@ -274,6 +269,7 @@ public class PlayService extends Service {
         Intent intent_PlayerCards = new Intent(TransmitFlag.PlayService);
         intent_PlayerCards.putExtra(TransmitFlag.State, TransmitFlag.PlayerCards);
         intent_PlayerCards.putExtra(TransmitFlag.PlayerCards, playerEntity.getArrayCard());
+        intent_PlayerCards.putExtra(TransmitFlag.Landlord, Landlord);
         sendBroadcast(intent_PlayerCards);
     }
 
@@ -281,46 +277,49 @@ public class PlayService extends Service {
      * 循环进行游戏
      **/
     private void CyclicFight(CustomEntity customEntity1, CustomEntity customEntity2, CustomEntity customEntity3) {
-        final CustomEntity Entity1 = customEntity1;
-        final CustomEntity Entity2 = customEntity2;
-        final CustomEntity Entity3 = customEntity3;
+        CyclicEntity1 = customEntity1;
+        CyclicEntity2 = customEntity2;
+        CyclicEntity3 = customEntity3;
         if (!TurnEnd) {
-            Fight(customEntity1);
-            handleService.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    CyclicFight(Entity2, Entity3, Entity1);
-                }
-            }, 1000);
+            Fight_ChooseCards(CyclicEntity1);
+
         }
     }
 
     /**
-     * 单个回合
+     * 单个回合选牌
      **/
-    private void Fight(CustomEntity customEntity) {
-        Log.e("Fight", "Fight----------------------");
+    private void Fight_ChooseCards(CustomEntity customEntity) {
         NowPlayer = customEntity.getName();
         if (Count == 2) {
             ArrayNowCards.clear();
             Count = 0;
         }
-        Log.e("ArrayNowCards", ArrayNowCards.size() == 0 ? "null" : ArrayNowCards.get(0));
-        Log.e("NowPlayer", NowPlayer);
-
-        ArrayList<String> arrayList = customEntity.PlayCard(ArrayNowCards);
-        if (arrayList.size() != 0) {
-            ArrayNowCards = arrayList;
-            Count = 0;
-            Log.e("ChooseCards", ArrayNowCards.get(0));
-        } else {
-            Count++;
+        if (NowPlayer.equals(playerEntity.getName())) {
+            Intent intent_choose = new Intent(TransmitFlag.PlayService);
+            intent_choose.putExtra(TransmitFlag.State, TransmitFlag.ChooseCards);
+            sendBroadcast(intent_choose);
+        }else{
+            ArrayList<String>  arrayList = customEntity.PlayCard(ArrayNowCards);
+            if (arrayList.size() != 0) {
+                ArrayNowCards = arrayList;
+                Count = 0;
+            } else {
+                Count++;
+            }
+            Fight_NowCards(customEntity);
         }
+    }
 
+    /**
+     * 单个回合显示牌
+     **/
+    private void Fight_NowCards(CustomEntity customEntity){
         Intent intentNowCards = new Intent(TransmitFlag.PlayService);
         intentNowCards.putExtra(TransmitFlag.State, TransmitFlag.NowTurn);
         intentNowCards.putExtra(TransmitFlag.NowCards, ArrayNowCards);
-        // intentNowCards.putExtra(TransmitFlag.NowPlayer, NowPlayer);
+        intentNowCards.putExtra(TransmitFlag.NowPlayer, NowPlayer);
+        intentNowCards.putExtra(TransmitFlag.RestCards, customEntity.getArrayCard().size());
         sendBroadcast(intentNowCards);
 
         if (customEntity.getArrayCard().size() == 0) {
@@ -332,6 +331,13 @@ public class PlayService extends Service {
             intentTurnEnd.putExtra(TransmitFlag.Victor, NowPlayer);
             sendBroadcast(intentTurnEnd);
         }
+
+        handleService.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                CyclicFight(CyclicEntity2, CyclicEntity3, CyclicEntity1);
+            }
+        }, 1000);
     }
 
     /**
@@ -401,11 +407,6 @@ public class PlayService extends Service {
      * 显示结果
      **/
     private void ShowResult() {
-        Log.e("TurnEnd", "TurnEnd");
-        Log.e("Victor", NowPlayer);
-        Log.e("computer1 rest cards ", computer1Entity.getArrayCard().size() + "");
-        Log.e("computer2 rest cards", computer2Entity.getArrayCard().size() + "");
-        Log.e("player rest cards", playerEntity.getArrayCard().size() + "");
         Toast.makeText(getApplicationContext(), NowPlayer + " win!", Toast.LENGTH_SHORT).show();
     }
 
@@ -501,6 +502,18 @@ public class PlayService extends Service {
                         Toast.makeText(getApplicationContext(), "Save successful!", Toast.LENGTH_SHORT).show();
                     } else
                         Toast.makeText(getApplicationContext(), "Save unsuccessful.", Toast.LENGTH_SHORT).show();
+                    break;
+                case TransmitFlag.ChooseCards:
+                    ArrayList<String>  arrayList = intent.getStringArrayListExtra(TransmitFlag.ChooseCards);
+                    playerEntity.PlayCard(arrayList);
+                    if (ArrayNowCards.size() != 0) {
+                        ArrayNowCards = arrayList;
+                        Count = 0;
+                    } else {
+                        Count++;
+                    }
+                    Fight_NowCards(playerEntity);
+                    break;
                 default:
                     break;
             }
