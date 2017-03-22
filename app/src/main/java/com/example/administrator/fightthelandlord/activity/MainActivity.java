@@ -20,9 +20,11 @@ import com.example.administrator.fightthelandlord.tool.TransmitFlag;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         InitUserData();
 
         //注册接收器
-        IntentFilter intentFilter = new IntentFilter(TransmitFlag.PlayService);
+        IntentFilter intentFilter = new IntentFilter(TransmitFlag.MainActivity);
         registerReceiver(mainActivityReceiver, intentFilter);
     }
 
@@ -157,6 +159,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
+    private void UpdateUserDate(boolean Win) {
+        if (Win) {
+            UserRecord_win = Integer.parseInt(UserRecord_win) + 1 + "";
+        } else {
+            UserRecord_lose = Integer.parseInt(UserRecord_lose) + 1 + "";
+        }
+        mtvRecord.setText("Win " + UserRecord_win + " Lose " + UserRecord_lose);
+        // 创建一个数值格式化对象
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        // 设置精确到小数点后2位
+        numberFormat.setMaximumFractionDigits(2);
+        float rate;
+        int total = Integer.parseInt(UserRecord_win) + Integer.parseInt(UserRecord_lose);
+        if (total == 0) {
+            rate = 0;
+        } else {
+            rate = (float) Integer.parseInt(UserRecord_win) / (float) total * 100;
+        }
+        mtvWinRate.setText(numberFormat.format(rate) + "%");
+        Save(UserName, UserLevel, UserRecord_win, UserRecord_lose);
+    }
+
+    private void Save(String Name, String Level, String Record_Win, String Record_Lose) {
+        try {
+            File UserFile = new File(MainActivity.this.getFilesDir(), UserID + "_user_data.xml");
+            //获取XmlSerializer类的实例  通过xml这个工具类去获取
+            XmlSerializer xmlSerializer = Xml.newSerializer();
+            //设置XmlSerializer序列化参数
+            FileOutputStream fos = new FileOutputStream(UserFile);
+            xmlSerializer.setOutput(fos, "utf-8");
+            //开始写xml文档开头
+            xmlSerializer.startDocument("utf-8", true);
+            //写xml的根节点
+            //用户数据
+            xmlSerializer.startTag(null, "name");
+            xmlSerializer.text(Name);
+            xmlSerializer.endTag(null, "name");
+
+            xmlSerializer.startTag(null, "level");
+            xmlSerializer.text(Level);
+            xmlSerializer.endTag(null, "level");
+
+            xmlSerializer.startTag(null, "record_win");
+            xmlSerializer.text(Record_Win);
+            xmlSerializer.endTag(null, "record_win");
+
+            xmlSerializer.startTag(null, "record_lose");
+            xmlSerializer.text(Record_Lose);
+            xmlSerializer.endTag(null, "record_lose");
+
+            //結束xml結尾
+            xmlSerializer.endDocument();
+            //关闭流
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 返回键关闭抽屉界面
      **/
@@ -207,27 +268,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             String strState = intent.getStringExtra(TransmitFlag.State);
+            Log.e("MainActivityReceiver", "" + strState);
             switch (strState) {
                 case TransmitFlag.UpdateUserData:
                     boolean Win = intent.getBooleanExtra("Win", false);
-                    if (Win) {
-                        UserRecord_win = Integer.parseInt(UserRecord_win) + 1 + "";
-                    } else {
-                        UserRecord_lose = Integer.parseInt(UserRecord_lose) + 1 + "";
-                    }
-                    mtvRecord.setText("Win " + UserRecord_win + " Lose " + UserRecord_lose);
-                    // 创建一个数值格式化对象
-                    NumberFormat numberFormat = NumberFormat.getInstance();
-                    // 设置精确到小数点后2位
-                    numberFormat.setMaximumFractionDigits(2);
-                    float rate;
-                    int total = Integer.parseInt(UserRecord_win) + Integer.parseInt(UserRecord_lose);
-                    if (total == 0) {
-                        rate = 0;
-                    } else {
-                        rate = (float) Integer.parseInt(UserRecord_win) / (float) total * 100;
-                    }
-                    mtvWinRate.setText(numberFormat.format(rate) + "%");
+                    UpdateUserDate(Win);
                     break;
                 default:
                     break;

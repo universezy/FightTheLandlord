@@ -49,22 +49,22 @@
         android:divider="@drawable/divider1"
         android:orientation="vertical"
         android:paddingBottom="8dp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:paddingTop="8dp"
         android:showDividers="middle">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="8"
+            android:layout_weight="10"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/llComputer1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="15"
                 android:orientation="vertical">
 
                 <ImageView
@@ -81,7 +81,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Rest"
-                    android:textSize="30dp" />
+                    android:textSize="20dp" />
 
                 <TextView
                     android:id="@+id/tvWordsComputer1"
@@ -90,23 +90,108 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Words"
-                    android:textSize="30dp" />
+                    android:textSize="20dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="6"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="70"
                 android:background="@color/sienna"
                 android:orientation="vertical">
 
-                <com.example.administrator.fightthelandlord.view.TableView
-                    android:id="@+id/vTable"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="5" />
+                    android:layout_weight="5"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="80"
+                        android:orientation="horizontal">
+
+                        <com.example.administrator.fightthelandlord.view.TableViewComputer1
+                            android:id="@+id/vTableComputer1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="50" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5" />
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="30"
+                            android:orientation="vertical">
+
+                            <com.example.administrator.fightthelandlord.view.TableViewLandlord
+                                android:id="@+id/vTableLandlord"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="10" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="5" />
+
+                            <com.example.administrator.fightthelandlord.view.TableViewResult
+                                android:id="@+id/vTableResult"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="25" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5" />
+
+                        <com.example.administrator.fightthelandlord.view.TableViewComputer2
+                            android:id="@+id/vTableComputer2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="50" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="5" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="40"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"/>
+                        <com.example.administrator.fightthelandlord.view.TableViewPlayer
+                            android:id="@+id/vTablePlayer"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="10"/>
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/llButton"
@@ -118,7 +203,7 @@
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2" />
+                        android:layout_weight="3" />
 
                     <Button
                         android:id="@+id/btnPass"
@@ -160,7 +245,7 @@
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2" />
+                        android:layout_weight="3" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -169,7 +254,7 @@
                 android:id="@+id/llComputer2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="15"
                 android:orientation="vertical">
 
                 <ImageView
@@ -186,7 +271,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Rest"
-                    android:textSize="30dp" />
+                    android:textSize="20dp" />
 
                 <TextView
                     android:id="@+id/tvWordsComputer2"
@@ -195,7 +280,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Words"
-                    android:textSize="30dp" />
+                    android:textSize="20dp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -219,7 +304,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:focusable="false">
 
                 <LinearLayout

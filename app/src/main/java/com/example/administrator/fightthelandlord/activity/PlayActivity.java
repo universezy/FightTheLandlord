@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,11 @@ import com.example.administrator.fightthelandlord.R;
 import com.example.administrator.fightthelandlord.service.PlayService;
 import com.example.administrator.fightthelandlord.tool.CardUtil;
 import com.example.administrator.fightthelandlord.tool.TransmitFlag;
-import com.example.administrator.fightthelandlord.view.TableView;
+import com.example.administrator.fightthelandlord.view.TableViewComputer1;
+import com.example.administrator.fightthelandlord.view.TableViewComputer2;
+import com.example.administrator.fightthelandlord.view.TableViewLandlord;
+import com.example.administrator.fightthelandlord.view.TableViewPlayer;
+import com.example.administrator.fightthelandlord.view.TableViewResult;
 
 import java.util.ArrayList;
 
@@ -37,10 +42,13 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private Button mbtnBack, mbtnPass, mbtnHint, mbtnPlay;
     private TextView mtvLandlord, mtvRestComputer1, mtvWordsComputer1, mtvRestComputer2, mtvWordsComputer2, mtvRestPlayer, mtvWordsPlayer;
     private ImageView ivComputer1, ivComputer2;
-    private TableView mvTable;
+    private TableViewComputer1 mvTableComputer1;
+    private TableViewComputer2 mvTableComputer2;
+    private TableViewPlayer mvTablePlayer;
+    private TableViewLandlord mvTableLandlord;
+    private TableViewResult mvTableResult;
     private LinearLayout mllComputer1, mllComputer2, mllPlayer, mllButton, mllPlayerCards;
 
-    public static PlayActivity playActivity;
     private Handler PlayHandler = new Handler();
     protected PlayService.ServiceBinder binder;
     protected PlayActivityReceiver playActivityReceiver = new PlayActivityReceiver();
@@ -51,17 +59,18 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private String UserID = "";
     //本局信息
     private String Landlord = "", NowPlayer = "";
-
-    ArrayList<String> ArrayNowCards = new ArrayList<>();
+    //场牌
+    private ArrayList<String> ArrayNowCards = new ArrayList<>();
     //玩家手牌
     private ArrayList<String> ArrayPlayerCards = new ArrayList<>();
     //玩家选牌
     private ArrayList<String> ArrayChooseCards = new ArrayList<>();
+    //地主牌
+    private ArrayList<String> ArrayLandlordCards = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.playActivity = this;
         setContentView(R.layout.activity_play);
         UserID = getIntent().getStringExtra(TransmitFlag.UserID);
         final String StartType = getIntent().getStringExtra(TransmitFlag.StartType);
@@ -83,7 +92,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run() {
                 //注册接收器
-                IntentFilter intentFilter = new IntentFilter(TransmitFlag.PlayService);
+                IntentFilter intentFilter = new IntentFilter(TransmitFlag.PlayActivity);
                 registerReceiver(playActivityReceiver, intentFilter);
                 //绑定服务
                 Intent intent = new Intent(PlayActivity.this, PlayService.class);
@@ -125,13 +134,17 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         ivComputer1 = (ImageView) findViewById(R.id.ivComputer1);
         ivComputer2 = (ImageView) findViewById(R.id.ivComputer2);
 
-        mvTable = (TableView) findViewById(R.id.vTable);
+        mvTableComputer1 = (TableViewComputer1) findViewById(R.id.vTableComputer1);
+        mvTableComputer2 = (TableViewComputer2) findViewById(R.id.vTableComputer2);
+        mvTablePlayer = (TableViewPlayer) findViewById(R.id.vTablePlayer);
+        mvTableLandlord= (TableViewLandlord) findViewById(R.id.vTableLandlord);
+        mvTableResult= (TableViewResult) findViewById(R.id.vTableResult);
 
         mllButton = (LinearLayout) findViewById(R.id.llButton);
         mllButton.setVisibility(View.INVISIBLE);
-        mllComputer1 = (LinearLayout)findViewById(R.id.llComputer1);
-        mllComputer2 = (LinearLayout)findViewById(R.id.llComputer2);
-        mllPlayer = (LinearLayout)findViewById(R.id.llPlayer);
+        mllComputer1 = (LinearLayout) findViewById(R.id.llComputer1);
+        mllComputer2 = (LinearLayout) findViewById(R.id.llComputer2);
+        mllPlayer = (LinearLayout) findViewById(R.id.llPlayer);
         mllPlayerCards = (LinearLayout) findViewById(R.id.llPlayerCards);
     }
 
@@ -145,7 +158,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnPass:
                 for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
                     mllPlayerCards.getChildAt(i).setBackgroundColor(Color.GRAY);
-                    ArrayChooseCards.remove(((TextView) mllPlayerCards.getChildAt(i).findViewById(R.id.tvItemCard)).getText().toString());
                 }
                 ArrayChooseCards.clear();
                 ChooseCards();
@@ -162,7 +174,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                     } else {
-                        break;
+                        return;
                     }
                 } else {
                     for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
@@ -183,7 +195,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
      **/
     public void ChooseCards() {
         mllButton.setVisibility(View.INVISIBLE);
-        Intent intent_ChooseCards = new Intent(TransmitFlag.PlayActivity);
+        Intent intent_ChooseCards = new Intent(TransmitFlag.PlayService);
         intent_ChooseCards.putExtra(TransmitFlag.State, TransmitFlag.ChooseCards);
         intent_ChooseCards.putExtra(TransmitFlag.ChooseCards, ArrayChooseCards);
         sendBroadcast(intent_ChooseCards);
@@ -223,6 +235,32 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 单回合显示
+     **/
+    private void NowPlayer(int rest) {
+        mllComputer1.setBackgroundColor(Color.LTGRAY);
+        mllComputer2.setBackgroundColor(Color.LTGRAY);
+        mllPlayer.setBackgroundColor(Color.LTGRAY);
+        switch (NowPlayer) {
+            case TransmitFlag.Computer1:
+                mllComputer1.setBackgroundColor(Color.RED);
+                mtvRestComputer1.setText(rest + "");
+                break;
+            case TransmitFlag.Computer2:
+                mllComputer2.setBackgroundColor(Color.RED);
+                mtvRestComputer2.setText(rest + "");
+                break;
+            case TransmitFlag.Player:
+                mllPlayer.setBackgroundColor(Color.RED);
+                mtvRestPlayer.setText(rest + "");
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    /**
      * 保存进度
      **/
     private void Save() {
@@ -238,7 +276,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO
-                        Intent intent_Save = new Intent(TransmitFlag.PlayActivity);
+                        Intent intent_Save = new Intent(TransmitFlag.PlayService);
                         intent_Save.putExtra(TransmitFlag.State, TransmitFlag.Save);
                         sendBroadcast(intent_Save);
                         dialog.dismiss();
@@ -262,43 +300,51 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             String strState = intent.getStringExtra(TransmitFlag.State);
+            Log.e("PlayActivityReceiver", "" + strState);
             switch (strState) {
-                case TransmitFlag.NowTurn:
-                    ArrayNowCards = intent.getStringArrayListExtra(TransmitFlag.NowCards);
-                    NowPlayer = intent.getStringExtra(TransmitFlag.NowPlayer);
-                    int rest = intent.getIntExtra(TransmitFlag.RestCards,0);
-                    switch (NowPlayer){
-                        case TransmitFlag.Computer1:
-                            mllComputer1.setBackgroundColor(Color.LTGRAY);
-                            mllComputer2.setBackgroundColor(Color.RED);
-                            mllPlayer.setBackgroundColor(Color.LTGRAY);
-                            mtvRestComputer1.setText(rest);
-                            break;
-                        case TransmitFlag.Computer2:
-                            mllComputer1.setBackgroundColor(Color.LTGRAY);
-                            mllComputer2.setBackgroundColor(Color.LTGRAY);
-                            mllPlayer.setBackgroundColor(Color.RED);
-                            mtvRestComputer2.setText(rest);
-                            break;
-                        case TransmitFlag.Player:
-                            mllComputer1.setBackgroundColor(Color.RED);
-                            mllComputer2.setBackgroundColor(Color.LTGRAY);
-                            mllPlayer.setBackgroundColor(Color.LTGRAY);
-                            mtvRestPlayer.setText(rest);
-                            break;
-                        default:
-                            break;
-                    }
-                    mvTable.setContent(ArrayNowCards);
-                    mvTable.invalidate();
-                    break;
                 case TransmitFlag.PlayerCards:
                     ArrayPlayerCards = intent.getStringArrayListExtra(TransmitFlag.PlayerCards);
                     Landlord = intent.getStringExtra(TransmitFlag.Landlord);
                     mtvLandlord.setText(Landlord);
+                    ArrayLandlordCards = intent.getStringArrayListExtra(TransmitFlag.LandlordCards);
+                    mvTableLandlord.setContent(ArrayLandlordCards);
+                    mvTableLandlord.invalidate();
                     LoadPlayerCards();
                     break;
+                case TransmitFlag.NowPlayer:
+                    NowPlayer = intent.getStringExtra(TransmitFlag.NowPlayer);
+                    int rest1 = intent.getIntExtra(TransmitFlag.RestCards, 0);
+                    NowPlayer(rest1);
+                    break;
+                case TransmitFlag.NowCards:
+                    ArrayList<String> arrayList = intent.getStringArrayListExtra(TransmitFlag.NowCards);
+                    int rest2 = intent.getIntExtra(TransmitFlag.RestCards, 0);
+                    if(arrayList.size()!=0){
+                        ArrayNowCards = arrayList;
+                    }
+                    switch (NowPlayer) {
+                        case TransmitFlag.Computer1:
+                            mtvRestComputer1.setText(rest2 + "");
+                            mvTableComputer1.setContent(arrayList);
+                            mvTableComputer1.invalidate();
+                            break;
+                        case TransmitFlag.Computer2:
+                            mtvRestComputer2.setText(rest2 + "");
+                            mvTableComputer2.setContent(arrayList);
+                            mvTableComputer2.invalidate();
+                            break;
+                        case TransmitFlag.Player:
+                            mtvRestPlayer.setText(rest2 + "");
+                            mvTablePlayer.setContent(arrayList);
+                            mvTablePlayer.invalidate();
+                            break;
+                        default:
+                            break;
+                    }
+
+                    break;
                 case TransmitFlag.ChooseCards:
+                    ArrayNowCards = intent.getStringArrayListExtra(TransmitFlag.ChooseCards);
                     mllButton.setVisibility(View.VISIBLE);
                     break;
                 case TransmitFlag.TurnEnd:

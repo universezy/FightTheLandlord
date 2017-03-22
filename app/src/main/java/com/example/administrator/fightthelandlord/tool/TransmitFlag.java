@@ -4,6 +4,7 @@ package com.example.administrator.fightthelandlord.tool;
  * 标识符
  **/
 public class TransmitFlag {
+    public static final String MainActivity = "MainActivity";
     public static final String PlayActivity = "PlayActivity";
     public static final String PlayService = "PlayService";
     public static final String State = "State";
@@ -25,4 +26,5 @@ public class TransmitFlag {
     public static final String ChooseCards ="ChooseCards";
     public static final String UpdateUserData ="UpdateUserData";
     public static final String RestCards ="RestCards";
+    public static final String LandlordCards ="LandlordCards";
 }

@@ -189,10 +189,10 @@ public class CardUtil {
                 weight = getWeight(str.get(0));
                 break;
             case Type_ThreeWithOne:
-                weight = getWeight(str.get(2));
+                weight = getWeight(str.get(1));
                 break;
             case Type_FourWithTwo:
-                weight = getWeight(str.get(3));
+                weight = getWeight(str.get(2));
                 break;
             case Type_Straight:
                 weight = getWeight(str.get(0));
@@ -201,7 +201,7 @@ public class CardUtil {
                 weight = getWeight(str.get(0));
                 break;
             case Type_Airplane:
-                weight = getWeight(str.get(str.size()/4));
+                weight = getWeight(str.get(str.size() / 4));
                 break;
             case Type_Bomb:
                 weight = getWeight(str.get(0));

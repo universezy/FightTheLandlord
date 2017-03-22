@@ -3,6 +3,16 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+
+    signingConfigs {
+        release {
+            storeFile file("key_store.jks")
+            storePassword "13608089849"
+            keyAlias "zengyu"
+            keyPassword "13608089849"
+        }
+    }
+
     defaultConfig {
         applicationId "com.example.administrator.fightthelandlord"
         minSdkVersion 16
@@ -12,10 +22,38 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            def fileName
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                if (variant.buildType.name.equals('release')) {
+                    fileName = "FightTheLandlord(release).apk"
+                    //  fileName = "RELEASE${defaultConfig.versionName}.${getTime()}.apk"
+                } else if (variant.buildType.name.equals('debug')) {
+                    //  fileName = "DEBUG${defaultConfig.versionName}.${getTime()}.apk"
+                    fileName = "FightTheLandlord(debug).apk"
+                }
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+        disable 'Instantiatable'
     }
 }
 

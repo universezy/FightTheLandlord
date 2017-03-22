@@ -13,16 +13,16 @@ import java.util.ArrayList;
 /**
  * 自定义画板
  **/
-public class TableView extends View {
+public class TableViewComputer1 extends View {
     public ArrayList<String> arrayList;
     private int mColumnSize, mRowSize;
-    private static final int NUM_COLUMNS = 7;
-    private static final int NUM_ROWS = 3;
+    private static final int NUM_COLUMNS = 5;
+    private static final int NUM_ROWS = 4;
     private Paint mPaint;
-    private int mCardSize = 25;
+    private int mCardSize = 18;
     private DisplayMetrics mDisplayMetrics;
 
-    public TableView(Context context, AttributeSet attrs) {
+    public TableViewComputer1(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDisplayMetrics = getResources().getDisplayMetrics();
         mPaint = new Paint();
@@ -46,8 +46,8 @@ public class TableView extends View {
         mPaint.setAntiAlias(true);
         if (arrayList == null) return;
         for (int Card = 0; Card < arrayList.size(); Card++) {
-            int column = Card % 7;
-            int row = Card / 7;
+            int column = Card % NUM_COLUMNS;
+            int row = Card / NUM_COLUMNS;
 
             //绘制背景色矩形
             int startRecX = mColumnSize * column;

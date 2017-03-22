@@ -55,6 +55,8 @@ public class PlayService extends Service {
     private ArrayList<String> ArrayCardBanker = new ArrayList<>();
     //场牌
     private ArrayList<String> ArrayNowCards = new ArrayList<>();
+    //地主牌
+    private ArrayList<String> ArrayLandlordCards = new ArrayList<>();
     //电脑实体
     private ComputerEntity computer1Entity, computer2Entity;
     //玩家实体
@@ -145,6 +147,11 @@ public class PlayService extends Service {
                             RestCardPlayer.clear();
                             for (int i = 0; i < xmlPullParser.getAttributeCount(); i++) {
                                 RestCardPlayer.add(xmlPullParser.getAttributeValue(i));
+                            }
+                        } else if (tagName.equals("landlordcards")) {
+                            ArrayLandlordCards.clear();
+                            for (int i = 0; i < xmlPullParser.getAttributeCount(); i++) {
+                                ArrayLandlordCards.add(xmlPullParser.getAttributeValue(i));
                             }
                         }
                         break;
@@ -254,7 +261,9 @@ public class PlayService extends Service {
             playerEntity.AddCard(ArrayCardBanker.get(52));
             playerEntity.AddCard(ArrayCardBanker.get(53));
         }
-
+        ArrayLandlordCards.add(ArrayCardBanker.get(51));
+        ArrayLandlordCards.add(ArrayCardBanker.get(52));
+        ArrayLandlordCards.add(ArrayCardBanker.get(53));
         DistributeCard(SortByWeight(computer1Entity.getArrayCard()), SortByWeight(computer2Entity.getArrayCard()), SortByWeight(playerEntity.getArrayCard()));
     }
 
@@ -270,6 +279,7 @@ public class PlayService extends Service {
         intent_PlayerCards.putExtra(TransmitFlag.State, TransmitFlag.PlayerCards);
         intent_PlayerCards.putExtra(TransmitFlag.PlayerCards, playerEntity.getArrayCard());
         intent_PlayerCards.putExtra(TransmitFlag.Landlord, Landlord);
+        intent_PlayerCards.putExtra(TransmitFlag.LandlordCards, ArrayLandlordCards);
         sendBroadcast(intent_PlayerCards);
     }
 
@@ -288,7 +298,7 @@ public class PlayService extends Service {
     /**
      * 单个回合选牌
      **/
-    private void Fight_ChooseCards(CustomEntity customEntity) {
+    private void Fight_ChooseCards(final CustomEntity customEntity) {
         if (Count == 2) {
             ArrayNowCards.clear();
             Count = 0;
@@ -297,6 +307,7 @@ public class PlayService extends Service {
         Intent intent_NowPlayer = new Intent(TransmitFlag.PlayActivity);
         intent_NowPlayer.putExtra(TransmitFlag.State, TransmitFlag.NowPlayer);
         intent_NowPlayer.putExtra(TransmitFlag.NowPlayer, NowPlayer);
+        intent_NowPlayer.putExtra(TransmitFlag.RestCards, customEntity.getArrayCard().size());
         sendBroadcast(intent_NowPlayer);
 
         if (NowPlayer.equals(playerEntity.getName())) {
@@ -305,24 +316,30 @@ public class PlayService extends Service {
             intent_choose.putExtra(TransmitFlag.ChooseCards, ArrayNowCards);
             sendBroadcast(intent_choose);
         } else {
-            ArrayList<String> arrayList = customEntity.PlayCard(ArrayNowCards);
+            final ArrayList<String> arrayList = customEntity.PlayCard(ArrayNowCards);
             if (arrayList.size() != 0) {
                 ArrayNowCards = arrayList;
                 Count = 0;
             } else {
                 Count++;
             }
-            Fight_NowCards(customEntity);
+            handleService.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Fight_NowCards(customEntity, arrayList);
+                }
+            }, 1000);
+
         }
     }
 
     /**
      * 单个回合显示牌
      **/
-    private void Fight_NowCards(CustomEntity customEntity) {
+    private void Fight_NowCards(CustomEntity customEntity, ArrayList<String> ChooseCards) {
         Intent intentNowCards = new Intent(TransmitFlag.PlayActivity);
         intentNowCards.putExtra(TransmitFlag.State, TransmitFlag.NowCards);
-        intentNowCards.putExtra(TransmitFlag.NowCards, ArrayNowCards);
+        intentNowCards.putExtra(TransmitFlag.NowCards, ChooseCards);
         intentNowCards.putExtra(TransmitFlag.RestCards, customEntity.getArrayCard().size());
         sendBroadcast(intentNowCards);
 
@@ -433,7 +450,7 @@ public class PlayService extends Service {
     /**
      * 保存进度
      **/
-    private boolean Save(String userID, String Landlord, String NowPlayer, ArrayList<String> ArrayCardComputer1, ArrayList<String> ArrayCardComputer2, ArrayList<String> ArrayCardPlayer) {
+    private boolean Save(String userID, String Landlord, String NowPlayer, ArrayList<String> ArrayCardComputer1, ArrayList<String> ArrayCardComputer2, ArrayList<String> ArrayCardPlayer, ArrayList<String> ArrayLandlordCards) {
         try {
             File UserFile = new File(getFilesDir(), userID + "_user_progress.xml");
             //获取XmlSerializer类的实例  通过xml这个工具类去获取
@@ -471,6 +488,12 @@ public class PlayService extends Service {
             }
             xmlSerializer.endTag(null, "player");
 
+            xmlSerializer.startTag(null, "landlordcards");
+            for (String string : ArrayLandlordCards) {
+                xmlSerializer.attribute(null, "landlordcard", string);
+            }
+            xmlSerializer.endTag(null, "landlordcards");
+
             //結束xml結尾
             xmlSerializer.endDocument();
             //关闭流
@@ -503,7 +526,7 @@ public class PlayService extends Service {
                     RestCardComputer1 = computer1Entity.getArrayCard();
                     RestCardComputer2 = computer2Entity.getArrayCard();
                     RestCardPlayer = playerEntity.getArrayCard();
-                    if (Save(UserID, Landlord, NowPlayer, RestCardComputer1, RestCardComputer2, RestCardPlayer)) {
+                    if (Save(UserID, Landlord, NowPlayer, RestCardComputer1, RestCardComputer2, RestCardPlayer, ArrayLandlordCards)) {
                         Toast.makeText(getApplicationContext(), "Save successful!", Toast.LENGTH_SHORT).show();
                     } else
                         Toast.makeText(getApplicationContext(), "Save unsuccessful.", Toast.LENGTH_SHORT).show();
@@ -511,13 +534,13 @@ public class PlayService extends Service {
                 case TransmitFlag.ChooseCards:
                     ArrayList<String> arrayList = intent.getStringArrayListExtra(TransmitFlag.ChooseCards);
                     playerEntity.PlayCard(arrayList);
-                    if (ArrayNowCards.size() != 0) {
+                    if (arrayList.size() != 0) {
                         ArrayNowCards = arrayList;
                         Count = 0;
                     } else {
                         Count++;
                     }
-                    Fight_NowCards(playerEntity);
+                    Fight_NowCards(playerEntity, arrayList);
                     break;
                 default:
                     break;
