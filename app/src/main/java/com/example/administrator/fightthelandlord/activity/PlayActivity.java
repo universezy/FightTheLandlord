@@ -35,6 +35,8 @@ import com.example.administrator.fightthelandlord.view.TableViewResult;
 
 import java.util.ArrayList;
 
+import static com.example.administrator.fightthelandlord.tool.TransmitFlag.NowCards;
+
 /**
  * 游戏
  **/
@@ -163,9 +165,26 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 ChooseCards();
                 break;
             case R.id.btnHint:
-
+                ArrayChooseCards.clear();
+                for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
+                    mllPlayerCards.getChildAt(i).setBackgroundColor(Color.GRAY);
+                }
+                if(ArrayNowCards.size()==0){
+                    mllPlayerCards.getChildAt(0).setBackgroundColor(Color.BLUE);
+                    ArrayChooseCards.add(ArrayPlayerCards.get(0));
+                }else{
+                    for (String str : ArrayPlayerCards) {
+                        if (CardUtil.getWeight(str) > CardUtil.getWeight(ArrayNowCards.get(0))) {
+                            Log.e("indexOf",ArrayPlayerCards.indexOf(str)+"");
+                            mllPlayerCards.getChildAt(ArrayPlayerCards.indexOf(str)).setBackgroundColor(Color.BLUE);
+                            ArrayChooseCards.add(str);
+                            break;
+                        }
+                    }
+                }
                 break;
             case R.id.btnPlay:
+                if(ArrayChooseCards.size()==0)return;
                 if (ArrayNowCards.size() != 0) {
                     if (CardUtil.getWeight(ArrayChooseCards.get(0)) > CardUtil.getWeight(ArrayNowCards.get(0))) {
                         for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
@@ -199,6 +218,9 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         intent_ChooseCards.putExtra(TransmitFlag.State, TransmitFlag.ChooseCards);
         intent_ChooseCards.putExtra(TransmitFlag.ChooseCards, ArrayChooseCards);
         sendBroadcast(intent_ChooseCards);
+        for (String str : ArrayChooseCards) {
+            ArrayPlayerCards.remove(str);
+        }
         ArrayChooseCards.clear();
     }
 
@@ -316,8 +338,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     int rest1 = intent.getIntExtra(TransmitFlag.RestCards, 0);
                     NowPlayer(rest1);
                     break;
-                case TransmitFlag.NowCards:
-                    ArrayList<String> arrayList = intent.getStringArrayListExtra(TransmitFlag.NowCards);
+                case NowCards:
+                    ArrayList<String> arrayList = intent.getStringArrayListExtra(NowCards);
                     int rest2 = intent.getIntExtra(TransmitFlag.RestCards, 0);
                     if(arrayList.size()!=0){
                         ArrayNowCards = arrayList;

@@ -48,10 +48,10 @@
         android:layout_height="match_parent"
         android:divider="@drawable/divider1"
         android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="8dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
         android:showDividers="middle">
 
         <LinearLayout
@@ -303,7 +303,8 @@
             <HorizontalScrollView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:layout_weight="4"
                 android:focusable="false">
 
