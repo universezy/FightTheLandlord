@@ -45,13 +45,19 @@ public class TableViewComputer1 extends View {
         //  mPaint.setTextSize(mCardSize);
         mPaint.setAntiAlias(true);
         if (arrayList == null) return;
+        int RowCount = arrayList.size() / NUM_COLUMNS + 1;
         for (int Card = 0; Card < arrayList.size(); Card++) {
             int column = Card % NUM_COLUMNS;
             int row = Card / NUM_COLUMNS;
 
             //绘制背景色矩形
             int startRecX = mColumnSize * column;
-            int startRecY = mRowSize * row;
+            int startRecY;
+            if (RowCount == 1 || RowCount == 2) {
+                startRecY = mRowSize * (row + 1);
+            } else {
+                startRecY = mRowSize * row;
+            }
             int endRecX = startRecX + mColumnSize;
             int endRecY = startRecY + mRowSize;
             mPaint.setColor(Color.GRAY);
@@ -59,7 +65,12 @@ public class TableViewComputer1 extends View {
 
             String string = arrayList.get(Card);
             int startX = (int) (mColumnSize * column + (mColumnSize - mPaint.measureText(string)) / 2);
-            int startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
+            int startY;
+            if (RowCount == 1 || RowCount == 2) {
+                startY = (int) (mRowSize * (row + 1) + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
+            } else {
+                startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
+            }
             mPaint.setColor(Color.BLACK);
             canvas.drawText(string, startX, startY, mPaint);
         }
