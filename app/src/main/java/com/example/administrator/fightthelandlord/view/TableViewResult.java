@@ -8,9 +8,8 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 /**
- * Created by Administrator on 2017/3/22.
- */
-
+ * 结果画板
+ **/
 public class TableViewResult extends View {
     public String result;
     private int mColumnSize, mRowSize;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -11,26 +12,30 @@ import android.view.View;
 import java.util.ArrayList;
 
 /**
- * Created by Administrator on 2017/3/22.
- */
-
-public class TableViewComputer2 extends View {
-    public ArrayList<String> arrayList;
+ * 电脑画板
+ **/
+public class TableView extends View {
+    public ArrayList<String> arrayList = new ArrayList<>();
     private int mColumnSize, mRowSize;
-    private static final int NUM_COLUMNS = 5;
-    private static final int NUM_ROWS = 4;
+    private int NUM_COLUMNS = 1;
+    private int NUM_ROWS = 1;
     private Paint mPaint;
     private int mCardSize = 18;
     private DisplayMetrics mDisplayMetrics;
 
-    public TableViewComputer2(Context context, AttributeSet attrs) {
+    public TableView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mDisplayMetrics = getResources().getDisplayMetrics();
         mPaint = new Paint();
     }
 
+    public void setColumnAndRow(int column,int row){
+        this.NUM_COLUMNS = column;
+        this.NUM_ROWS = row;
+    }
+
     public void setContent(ArrayList<String> arrayList) {
-        this.arrayList = arrayList;
+          this.arrayList = arrayList;
     }
 
     @Override
@@ -45,32 +50,32 @@ public class TableViewComputer2 extends View {
         mPaint.setTextSize(mCardSize * mDisplayMetrics.scaledDensity * 2 / 3);
         mPaint.setAntiAlias(true);
         if (arrayList == null) return;
-        int RowCount = arrayList.size() / NUM_COLUMNS + 1;
+        int RowCount = arrayList.size() / NUM_COLUMNS;
         for (int Card = 0; Card < arrayList.size(); Card++) {
             int column = Card % NUM_COLUMNS;
             int row = Card / NUM_COLUMNS;
 
             //绘制背景色矩形
-            int startRecX = mColumnSize * column;
-            int startRecY;
-            if (RowCount == 1 || RowCount == 2) {
-                startRecY = mRowSize * (row + 1);
+            int startRecX, startRecY;
+            if (row < RowCount) {
+                startRecX = mColumnSize * column;
             } else {
-                startRecY = mRowSize * row;
+                startRecX = (getWidth() - arrayList.size() % NUM_COLUMNS * mColumnSize) / 2 + column * mColumnSize;
             }
+            startRecY = (getHeight() - RowCount * mRowSize) / 2 + row * mRowSize;
             int endRecX = startRecX + mColumnSize;
             int endRecY = startRecY + mRowSize;
+
             mPaint.setColor(Color.GRAY);
-            canvas.drawRoundRect(startRecX, startRecY, endRecX, endRecY, 30, 30, mPaint);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                canvas.drawRoundRect(startRecX, startRecY, endRecX, endRecY, 20, 20, mPaint);
+            } else {
+                canvas.drawRect(startRecX, startRecY, endRecX, endRecY, mPaint);
+            }
 
             String string = arrayList.get(Card);
-            int startX = (int) (mColumnSize * column + (mColumnSize - mPaint.measureText(string)) / 2);
-            int startY;
-            if (RowCount == 1 || RowCount == 2) {
-                startY = (int) (mRowSize * (row + 1) + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
-            } else {
-                startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
-            }
+            float startX = startRecX + (mColumnSize - mPaint.measureText(string)) / 2;
+            float startY = startRecY + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2;
             mPaint.setColor(Color.BLACK);
             canvas.drawText(string, startX, startY, mPaint);
         }

@@ -27,15 +27,11 @@ import com.example.administrator.fightthelandlord.R;
 import com.example.administrator.fightthelandlord.service.PlayService;
 import com.example.administrator.fightthelandlord.tool.CardUtil;
 import com.example.administrator.fightthelandlord.tool.TransmitFlag;
-import com.example.administrator.fightthelandlord.view.TableViewComputer1;
-import com.example.administrator.fightthelandlord.view.TableViewComputer2;
-import com.example.administrator.fightthelandlord.view.TableViewLandlord;
-import com.example.administrator.fightthelandlord.view.TableViewPlayer;
+import com.example.administrator.fightthelandlord.view.TableView;
 import com.example.administrator.fightthelandlord.view.TableViewResult;
 
 import java.util.ArrayList;
 
-import static com.example.administrator.fightthelandlord.tool.TransmitFlag.NowCards;
 
 /**
  * 游戏
@@ -44,10 +40,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private Button mbtnBack, mbtnPass, mbtnHint, mbtnPlay;
     private TextView mtvLandlord, mtvRestComputer1, mtvWordsComputer1, mtvRestComputer2, mtvWordsComputer2, mtvRestPlayer, mtvWordsPlayer;
     private ImageView ivComputer1, ivComputer2;
-    private TableViewComputer1 mvTableComputer1;
-    private TableViewComputer2 mvTableComputer2;
-    private TableViewPlayer mvTablePlayer;
-    private TableViewLandlord mvTableLandlord;
+    private TableView mvTableComputer1,mvTableComputer2,mvTablePlayer,mvTableLandlord;
     private TableViewResult mvTableResult;
     private LinearLayout mllComputer1, mllComputer2, mllPlayer, mllButton, mllPlayerCards;
 
@@ -136,10 +129,14 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         ivComputer1 = (ImageView) findViewById(R.id.ivComputer1);
         ivComputer2 = (ImageView) findViewById(R.id.ivComputer2);
 
-        mvTableComputer1 = (TableViewComputer1) findViewById(R.id.vTableComputer1);
-        mvTableComputer2 = (TableViewComputer2) findViewById(R.id.vTableComputer2);
-        mvTablePlayer = (TableViewPlayer) findViewById(R.id.vTablePlayer);
-        mvTableLandlord= (TableViewLandlord) findViewById(R.id.vTableLandlord);
+        mvTableComputer1 = (TableView) findViewById(R.id.vTableComputer1);
+        mvTableComputer1.setColumnAndRow(5,4);
+        mvTableComputer2 = (TableView) findViewById(R.id.vTableComputer2);
+        mvTableComputer2.setColumnAndRow(5,4);
+        mvTablePlayer = (TableView) findViewById(R.id.vTablePlayer);
+        mvTablePlayer.setColumnAndRow(10,2);
+        mvTableLandlord= (TableView) findViewById(R.id.vTableLandlord);
+        mvTableLandlord.setColumnAndRow(3,1);
         mvTableResult= (TableViewResult) findViewById(R.id.vTableResult);
 
         mllButton = (LinearLayout) findViewById(R.id.llButton);
@@ -338,8 +335,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     int rest1 = intent.getIntExtra(TransmitFlag.RestCards, 0);
                     NowPlayer(rest1);
                     break;
-                case NowCards:
-                    ArrayList<String> arrayList = intent.getStringArrayListExtra(NowCards);
+                case TransmitFlag.NowCards:
+                    ArrayList<String> arrayList = intent.getStringArrayListExtra(TransmitFlag.NowCards);
                     int rest2 = intent.getIntExtra(TransmitFlag.RestCards, 0);
                     if(arrayList.size()!=0){
                         ArrayNowCards = arrayList;
