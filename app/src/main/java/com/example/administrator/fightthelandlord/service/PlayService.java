@@ -264,7 +264,7 @@ public class PlayService extends Service {
         ArrayLandlordCards.add(ArrayCardBanker.get(51));
         ArrayLandlordCards.add(ArrayCardBanker.get(52));
         ArrayLandlordCards.add(ArrayCardBanker.get(53));
-        DistributeCard(SortByWeight(computer1Entity.getArrayCard()), SortByWeight(computer2Entity.getArrayCard()), SortByWeight(playerEntity.getArrayCard()));
+        DistributeCard(CardUtil.SortByWeight(computer1Entity.getArrayCard()), CardUtil.SortByWeight(computer2Entity.getArrayCard()), CardUtil.SortByWeight(playerEntity.getArrayCard()));
     }
 
     /**
@@ -361,25 +361,7 @@ public class PlayService extends Service {
         }, 1000);
     }
 
-    /**
-     * 按权值排序
-     **/
-    private ArrayList<String> SortByWeight(ArrayList<String> arrayList) {
-        ArrayList<String> ArraySort = arrayList;
-        boolean hasChanged = false;
-        for (int i = 0; i < arrayList.size() && !hasChanged; i++) {
-            hasChanged = true;
-            for (int j = arrayList.size() - 1; j > i; j--) {
-                if (CardUtil.getWeight(arrayList.get(j)) < CardUtil.getWeight(arrayList.get(j - 1))) {
-                    String temp = arrayList.get(j);
-                    arrayList.set(j, arrayList.get(j - 1));
-                    arrayList.set(j - 1, temp);
-                    hasChanged = false;
-                }
-            }
-        }
-        return ArraySort;
-    }
+
 
     /**
      * 新游戏

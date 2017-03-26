@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.example.administrator.fightthelandlord.R;
 import com.example.administrator.fightthelandlord.service.PlayService;
 import com.example.administrator.fightthelandlord.tool.CardUtil;
+import com.example.administrator.fightthelandlord.tool.ChooseUtil;
 import com.example.administrator.fightthelandlord.tool.TransmitFlag;
 import com.example.administrator.fightthelandlord.view.TableView;
 import com.example.administrator.fightthelandlord.view.TableViewResult;
@@ -40,7 +41,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private Button mbtnBack, mbtnPass, mbtnHint, mbtnPlay;
     private TextView mtvLandlord, mtvRestComputer1, mtvWordsComputer1, mtvRestComputer2, mtvWordsComputer2, mtvRestPlayer, mtvWordsPlayer;
     private ImageView ivComputer1, ivComputer2;
-    private TableView mvTableComputer1,mvTableComputer2,mvTablePlayer,mvTableLandlord;
+    private TableView mvTableComputer1, mvTableComputer2, mvTablePlayer, mvTableLandlord;
     private TableViewResult mvTableResult;
     private LinearLayout mllComputer1, mllComputer2, mllPlayer, mllButton, mllPlayerCards;
 
@@ -130,14 +131,14 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         ivComputer2 = (ImageView) findViewById(R.id.ivComputer2);
 
         mvTableComputer1 = (TableView) findViewById(R.id.vTableComputer1);
-        mvTableComputer1.setColumnAndRow(5,4);
+        mvTableComputer1.setColumnAndRow(5, 4);
         mvTableComputer2 = (TableView) findViewById(R.id.vTableComputer2);
-        mvTableComputer2.setColumnAndRow(5,4);
+        mvTableComputer2.setColumnAndRow(5, 4);
         mvTablePlayer = (TableView) findViewById(R.id.vTablePlayer);
-        mvTablePlayer.setColumnAndRow(10,2);
-        mvTableLandlord= (TableView) findViewById(R.id.vTableLandlord);
-        mvTableLandlord.setColumnAndRow(3,1);
-        mvTableResult= (TableViewResult) findViewById(R.id.vTableResult);
+        mvTablePlayer.setColumnAndRow(10, 2);
+        mvTableLandlord = (TableView) findViewById(R.id.vTableLandlord);
+        mvTableLandlord.setColumnAndRow(3, 1);
+        mvTableResult = (TableViewResult) findViewById(R.id.vTableResult);
 
         mllButton = (LinearLayout) findViewById(R.id.llButton);
         mllButton.setVisibility(View.INVISIBLE);
@@ -163,43 +164,45 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnHint:
                 ArrayChooseCards.clear();
+                ChooseUtil chooseUtil = new ChooseUtil(ArrayPlayerCards);
+                ArrayChooseCards = chooseUtil.chooseGroup(ArrayNowCards);
+
                 for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
                     mllPlayerCards.getChildAt(i).setBackgroundColor(Color.GRAY);
                 }
-                if(ArrayNowCards.size()==0){
-                    mllPlayerCards.getChildAt(0).setBackgroundColor(Color.BLUE);
-                    ArrayChooseCards.add(ArrayPlayerCards.get(0));
-                }else{
-                    for (String str : ArrayPlayerCards) {
-                        if (CardUtil.getWeight(str) > CardUtil.getWeight(ArrayNowCards.get(0))) {
-                            Log.e("indexOf",ArrayPlayerCards.indexOf(str)+"");
-                            mllPlayerCards.getChildAt(ArrayPlayerCards.indexOf(str)).setBackgroundColor(Color.BLUE);
-                            ArrayChooseCards.add(str);
-                            break;
+                Log.e("ArrayNowCards", ArrayNowCards.size() + "");
+                if (ArrayNowCards.size() == 0) {
+                    ArrayChooseCards = chooseUtil.chooseGroup();
+                } else {
+                    ArrayChooseCards = chooseUtil.chooseGroup(ArrayNowCards);
+                    for (int i = 0; i < ArrayChooseCards.size(); i++) {
+                        for (int j = 0; j < mllPlayerCards.getChildCount(); j++) {
+                            if (((TextView) mllPlayerCards.getChildAt(j).findViewById(R.id.tvItemCard)).getText().equals(ArrayChooseCards.get(i))) {
+                                mllPlayerCards.getChildAt(i).setBackgroundColor(Color.BLUE);
+                                break;
+                            }
                         }
                     }
                 }
                 break;
             case R.id.btnPlay:
-                if(ArrayChooseCards.size()==0)return;
-                if (ArrayNowCards.size() != 0) {
-                    if (CardUtil.getWeight(ArrayChooseCards.get(0)) > CardUtil.getWeight(ArrayNowCards.get(0))) {
-                        for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
-                            if (((ColorDrawable) mllPlayerCards.getChildAt(i).getBackground()).getColor() == Color.BLUE) {
-                                mllPlayerCards.removeViewAt(i);
-                            }
-                        }
-                    } else {
-                        return;
-                    }
-                } else {
-                    for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
-                        if (((ColorDrawable) mllPlayerCards.getChildAt(i).getBackground()).getColor() == Color.BLUE) {
-                            mllPlayerCards.removeViewAt(i);
+                if (ArrayChooseCards.size() == 0) return;
+                ArrayChooseCards = CardUtil.SortByWeight(ArrayChooseCards);
+                Log.e("getType", CardUtil.getType(ArrayChooseCards));
+                if (CardUtil.getType(ArrayChooseCards) != CardUtil.Type_Wrong) {
+                    if (ArrayNowCards.size() != 0) {
+                        if (CardUtil.getGroupWeight(ArrayChooseCards) <= CardUtil.getGroupWeight(ArrayNowCards)) {
+                            return;
                         }
                     }
+                    int length = mllPlayerCards.getChildCount();
+                    for (int i = length; i > 0; i--) {
+                        if (((ColorDrawable) mllPlayerCards.getChildAt(i - 1).getBackground()).getColor() == Color.BLUE) {
+                            mllPlayerCards.removeViewAt(i - 1);
+                        }
+                    }
+                    ChooseCards();
                 }
-                ChooseCards();
                 break;
             default:
                 break;
@@ -210,6 +213,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
      * 选牌
      **/
     public void ChooseCards() {
+        ArrayChooseCards = CardUtil.SortByWeight(ArrayChooseCards);
         mllButton.setVisibility(View.INVISIBLE);
         Intent intent_ChooseCards = new Intent(TransmitFlag.PlayService);
         intent_ChooseCards.putExtra(TransmitFlag.State, TransmitFlag.ChooseCards);
@@ -294,7 +298,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO
                         Intent intent_Save = new Intent(TransmitFlag.PlayService);
                         intent_Save.putExtra(TransmitFlag.State, TransmitFlag.Save);
                         sendBroadcast(intent_Save);
@@ -338,7 +341,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 case TransmitFlag.NowCards:
                     ArrayList<String> arrayList = intent.getStringArrayListExtra(TransmitFlag.NowCards);
                     int rest2 = intent.getIntExtra(TransmitFlag.RestCards, 0);
-                    if(arrayList.size()!=0){
+                    if (arrayList.size() != 0) {
                         ArrayNowCards = arrayList;
                     }
                     switch (NowPlayer) {
@@ -360,7 +363,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                         default:
                             break;
                     }
-
                     break;
                 case TransmitFlag.ChooseCards:
                     ArrayNowCards = intent.getStringArrayListExtra(TransmitFlag.ChooseCards);

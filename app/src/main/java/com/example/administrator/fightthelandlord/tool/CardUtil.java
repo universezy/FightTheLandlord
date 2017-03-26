@@ -1,10 +1,15 @@
 package com.example.administrator.fightthelandlord.tool;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 卡牌工具类
+ **/
 public class CardUtil {
     public static final String Type_Single = "Type_Single";
     public static final String Type_Pair = "Type_Pair";
@@ -14,114 +19,118 @@ public class CardUtil {
     public static final String Type_Straight = "Type_Straight";
     public static final String Type_ContinuousPairs = "Type_ContinuousPairs";
     public static final String Type_Airplane = "Type_Airplane";
-    public static final String Type_Bomb = "Type_Bomb";
-    public static final String Type_JokerBomb = "Type_JokerBomb";
+    public static final String Type_Boom = "Type_Boom";
+    public static final String Type_JokerBoom = "Type_JokerBoom";
     public static final String Type_Wrong = "Type_Wrong";
 
-    CardUtil() {
-
-    }
-
+    /**
+     * 获取单张牌的权值
+     **/
     public static int getWeight(String str) {
-        int weight = 0;
         switch (str) {
             case "3":
-                weight = 0;
-                break;
+                return 0;
             case "4":
-                weight = 1;
-                break;
+                return 1;
             case "5":
-                weight = 2;
-                break;
+                return 2;
             case "6":
-                weight = 3;
-                break;
+                return 3;
             case "7":
-                weight = 4;
-                break;
+                return 4;
             case "8":
-                weight = 5;
-                break;
+                return 5;
             case "9":
-                weight = 6;
-                break;
+                return 6;
             case "10":
-                weight = 7;
-                break;
+                return 7;
             case "J":
-                weight = 8;
-                break;
+                return 8;
             case "Q":
-                weight = 9;
-                break;
+                return 9;
             case "K":
-                weight = 10;
-                break;
+                return 10;
             case "A":
-                weight = 11;
-                break;
+                return 11;
             case "2":
-                weight = 13;
-                break;
+                return 13;
             case "joker":
-                weight = 15;
-                break;
+                return 15;
             case "Joker":
-                weight = 16;
-                break;
+                return 16;
             default:
-                break;
+                return 0;
         }
-        return weight;
     }
 
-    public static String getType(ArrayList<String> arrayList) {
-        if (arrayList.size() == 1) {                                //Type_Single
+    /**
+     * 获取组合牌的类型
+     **/
+    public static String getType(ArrayList<String> arrayListRes) {
+        if (arrayListRes.size() == 1) {                                //Type_Single
             return Type_Single;
-        } else if (arrayList.size() == 2) {                         //Type_Pair
-            if (arrayList.get(0).equals(arrayList.get(1))) {
+        } else if (arrayListRes.size() == 2) {                         //Type_Pair
+            if (arrayListRes.get(0).equals(arrayListRes.get(1))) {
                 return Type_Pair;
             }
-        } else if (arrayList.size() == 3) {                         //Type_Three
-            if (arrayList.get(0).equals(arrayList.get(1)) && arrayList.get(2).equals(arrayList.get(1))) {
+        } else if (arrayListRes.size() == 3) {                         //Type_Three
+            if (arrayListRes.get(0).equals(arrayListRes.get(1)) && arrayListRes.get(2).equals(arrayListRes.get(1))) {
                 return Type_Three;
             }
-        } else if (arrayList.size() == 4) {                         //Type_ThreeWithOne
+        } else if (arrayListRes.size() == 4) {                           //Type_Boom
             String Res = "";
-            for (String res : arrayList) {
+            for (String res : arrayListRes) {
                 Res += res;
             }
+            Log.e("Res", Res);
+            Pattern pattern = Pattern.compile("[.*]{4}");
+            Matcher matcher = pattern.matcher(Res);
+            if (matcher.matches()) {
+                return Type_Boom;
+            }
+        } else if (arrayListRes.size() == 4) {                         //Type_ThreeWithOne
+            String Res = "";
+            for (String res : arrayListRes) {
+                Res += res;
+            }
+            Log.e("Res", Res);
             Pattern pattern = Pattern.compile("[.*]?[.*]{3}[.*]?");
             Matcher matcher = pattern.matcher(Res);
             if (matcher.matches()) {
                 return Type_ThreeWithOne;
             }
-        } else if (arrayList.size() == 6) {                         //Type_FourWithTwo
+        } else if (arrayListRes.size() == 6) {                         //Type_FourWithTwo
             String Res = "";
-            for (String res : arrayList) {
+            for (String res : arrayListRes) {
+                Log.e("res", res);
                 Res += res;
+                Log.e("Res += res", Res);
             }
+            Log.e("Res", Res);
             Pattern pattern = Pattern.compile("[.*]{0,2}[.*]{4}[.*]{0,2}");
             Matcher matcher = pattern.matcher(Res);
             if (matcher.matches()) {
                 return Type_FourWithTwo;
             }
-        } else if (arrayList.size() > 4) {                           //Type_Straight
+        } else if (arrayListRes.size() > 4) {                           //Type_Straight
             int count_straight = 0;
-            for (int i = 0; i < arrayList.size() - 1; i++) {
-                if (CardUtil.getWeight(arrayList.get(i + 1)) - CardUtil.getWeight(arrayList.get(i)) == 1)
+            for (int i = 0; i < arrayListRes.size() - 1; i++) {
+                if (NextSequenceCard(arrayListRes.get(i)).equals(arrayListRes.get(i + 1))) {
                     count_straight++;
+                }
             }
-            if (count_straight == arrayList.size() - 1) {
+            if (count_straight == arrayListRes.size() - 1) {
                 return Type_Straight;
             }
-        } else if (arrayList.size() > 4 && arrayList.size() % 2 == 0) {    //Type_ContinuousPairs
-            int count_pair = arrayList.size() / 2;
+        } else if (arrayListRes.size() >= 6 && arrayListRes.size() % 2 == 0) {    //Type_ContinuousPairs
+            int count_pair = arrayListRes.size() / 2;
             String Res = "";
-            for (String res : arrayList) {
+            for (String res : arrayListRes) {
+                Log.e("res", res);
                 Res += res;
+                Log.e("Res += res", Res);
             }
+            Log.e("Res", Res);
             String RegEx = "";
             for (int i = 0; i < count_pair; i++) {
                 RegEx += "[.*]{2}";
@@ -130,88 +139,132 @@ public class CardUtil {
             Matcher matcher = pattern.matcher(Res);
             if (matcher.matches()) {
                 int count_straight = 0;
-                for (int i = 0; i < count_straight - 1; i++) {
-                    if (CardUtil.getWeight(arrayList.get(i * 2 + 2)) - CardUtil.getWeight(arrayList.get(i * 2)) == 1)
+                for (int i = 0; i < count_pair - 1; i++) {
+                    if (NextSequenceCard(arrayListRes.get(i * 2)).equals(arrayListRes.get(i * 2 + 2)))
                         count_straight++;
                 }
-                if (count_straight == arrayList.size() - 1) {
+                if (count_straight == count_pair) {
                     return Type_ContinuousPairs;
                 }
             }
-        } else if (arrayList.size() > 7 && arrayList.size() % 4 == 0) {    //Type_Airplane
-            int count_pair = arrayList.size() / 4;
+        } else if (arrayListRes.size() >= 8 && arrayListRes.size() % 4 == 0) {    //Type_Airplane
+            int count_three = arrayListRes.size() / 4;
             String Res = "";
-            for (String res : arrayList) {
+            for (String res : arrayListRes) {
+                Log.e("res", res);
                 Res += res;
+                Log.e("Res += res", Res);
             }
+            Log.e("Res", Res);
             String RegEx = ".*";
-            for (int i = 0; i < count_pair; i++) {
+            for (int i = 0; i < count_three; i++) {
                 RegEx += "[.*]{3}";
             }
             RegEx += ".*";
             Pattern pattern = Pattern.compile(RegEx);
             Matcher matcher = pattern.matcher(Res);
             if (matcher.matches()) {
-                return Type_Airplane;
+                int count_straight = 0;
+                for (int i = 0; i < count_three - 1; i++) {
+                    if (NextSequenceCard(arrayListRes.get(i * 4 + 1)).equals(arrayListRes.get(i * 4 + 5)))
+                        count_straight++;
+                }
+                if (count_straight == count_three) {
+                    return Type_Airplane;
+                }
             }
-        } else if (arrayList.size() == 4) {                           //Type_Bomb
-            String Res = "";
-            for (String res : arrayList) {
-                Res += res;
-            }
-            String RegEx = "";
-            for (int i = 0; i < 4; i++) {
-                RegEx += "[.*]{4}";
-            }
-            Pattern pattern = Pattern.compile(RegEx);
-            Matcher matcher = pattern.matcher(Res);
-            if (matcher.matches()) {
-                return Type_Bomb;
-            }
-        } else if (arrayList.size() == 2) {                            //Type_JokerBomb
-            if (getWeight(arrayList.get(0)) == 15 && getWeight(arrayList.get(1)) == 16) {
-                return Type_JokerBomb;
+        } else if (arrayListRes.size() == 2) {                            //Type_JokerBoom
+            if (getWeight(arrayListRes.get(0)) == 15 && getWeight(arrayListRes.get(1)) == 16) {
+                return Type_JokerBoom;
             }
         }
         return Type_Wrong;
     }
 
-    public static int getTypeWeight(ArrayList<String> str) {
-        int weight = 0;
+    /**
+     * 获取组合牌的权值
+     **/
+    public static int getGroupWeight(ArrayList<String> str) {
         switch (getType(str)) {
             case Type_Single:
-                weight = getWeight(str.get(0));
-                break;
+                return getWeight(str.get(0));
             case Type_Pair:
-                weight = getWeight(str.get(0));
-                break;
+                return getWeight(str.get(0));
             case Type_Three:
-                weight = getWeight(str.get(0));
-                break;
+                return getWeight(str.get(0));
             case Type_ThreeWithOne:
-                weight = getWeight(str.get(1));
-                break;
+                return getWeight(str.get(1));
             case Type_FourWithTwo:
-                weight = getWeight(str.get(2));
-                break;
+                return getWeight(str.get(2));
             case Type_Straight:
-                weight = getWeight(str.get(0));
-                break;
+                return getWeight(str.get(0));
             case Type_ContinuousPairs:
-                weight = getWeight(str.get(0));
-                break;
+                return getWeight(str.get(0));
             case Type_Airplane:
-                weight = getWeight(str.get(str.size() / 4));
-                break;
-            case Type_Bomb:
-                weight = getWeight(str.get(0));
-                break;
-            case Type_JokerBomb:
-                weight = getWeight(str.get(0));
-                break;
+                return getWeight(str.get(str.size() / 4));
+            case Type_Boom:
+                return getWeight(str.get(0));
+            case Type_JokerBoom:
+                return getWeight(str.get(0));
+            case Type_Wrong:
             default:
-                break;
+                return 0;
         }
-        return weight;
+    }
+
+    /**
+     * 获取顺序下一张牌
+     **/
+    public static String NextSequenceCard(String card) {
+        switch (card) {
+            case "3":
+                return "4";
+            case "4":
+                return "5";
+            case "5":
+                return "6";
+            case "6":
+                return "7";
+            case "7":
+                return "8";
+            case "8":
+                return "9";
+            case "9":
+                return "10";
+            case "10":
+                return "J";
+            case "J":
+                return "Q";
+            case "Q":
+                return "K";
+            case "K":
+                return "A";
+            case "A":
+            case "2":
+            case "joker":
+            case "Joker":
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * 按权值排序
+     **/
+    public static ArrayList<String> SortByWeight(ArrayList<String> arrayList) {
+        ArrayList<String> ArraySort = arrayList;
+        boolean hasChanged = false;
+        for (int i = 0; i < arrayList.size() && !hasChanged; i++) {
+            hasChanged = true;
+            for (int j = arrayList.size() - 1; j > i; j--) {
+                if (CardUtil.getWeight(arrayList.get(j)) < CardUtil.getWeight(arrayList.get(j - 1))) {
+                    String temp = arrayList.get(j);
+                    arrayList.set(j, arrayList.get(j - 1));
+                    arrayList.set(j - 1, temp);
+                    hasChanged = false;
+                }
+            }
+        }
+        return ArraySort;
     }
 }

@@ -12,7 +12,7 @@ import android.view.View;
 import java.util.ArrayList;
 
 /**
- * 电脑画板
+ * 自定义画板
  **/
 public class TableView extends View {
     public ArrayList<String> arrayList = new ArrayList<>();

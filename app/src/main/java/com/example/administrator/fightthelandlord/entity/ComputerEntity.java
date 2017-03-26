@@ -1,6 +1,8 @@
 package com.example.administrator.fightthelandlord.entity;
 
-import com.example.administrator.fightthelandlord.tool.CardUtil;
+import android.util.Log;
+
+import com.example.administrator.fightthelandlord.tool.ChooseUtil;
 
 import java.util.ArrayList;
 
@@ -15,33 +17,19 @@ public class ComputerEntity extends CustomEntity {
 
     @Override
     public ArrayList<String> PlayCard(ArrayList<String> NowCards) {
-        ArrayList<String> chooseCards = new ArrayList<>();
-
+        ArrayList<String> chooseCards ;
+        ChooseUtil chooseUtil = new ChooseUtil(ArrayCard);
         //选牌逻辑
         if (NowCards.size() == 0) {
-            chooseCards.add(ArrayCard.get(0));
-
-
-
-
-
+            chooseCards = chooseUtil.chooseGroup();
         } else {
-            for (String str : ArrayCard) {
-                if (CardUtil.getWeight(str) > CardUtil.getWeight(NowCards.get(0))) {
-                    chooseCards.add(str);
-                    break;
-                }
-            }
-
-
-
-
-
+            chooseCards = chooseUtil.chooseGroup( NowCards);
         }
-
         for (String chooseCard : chooseCards) {
+            Log.e("chooseCards",chooseCard);
             int index = ArrayCard.indexOf(chooseCard);
-            ArrayCard.remove(index);
+            if (index >= 0)
+                ArrayCard.remove(index);
         }
         return chooseCards;
     }
