@@ -77,15 +77,15 @@ public class CardUtil {
             if (arrayListRes.get(0).equals(arrayListRes.get(1)) && arrayListRes.get(2).equals(arrayListRes.get(1))) {
                 return Type_Three;
             }
-        } else if (arrayListRes.size() == 4) {                           //Type_Boom
+        } else if (arrayListRes.size() == 4) {                         //Type_Boom
             String Res = "";
+            String des = "";
             for (String res : arrayListRes) {
                 Res += res;
+                des += arrayListRes.get(0);
             }
             Log.e("Res", Res);
-            Pattern pattern = Pattern.compile("[.*]{4}");
-            Matcher matcher = pattern.matcher(Res);
-            if (matcher.matches()) {
+            if (Res.equals(des)) {
                 return Type_Boom;
             }
         } else if (arrayListRes.size() == 4) {                         //Type_ThreeWithOne
@@ -94,22 +94,18 @@ public class CardUtil {
                 Res += res;
             }
             Log.e("Res", Res);
-            Pattern pattern = Pattern.compile("[.*]?[.*]{3}[.*]?");
-            Matcher matcher = pattern.matcher(Res);
-            if (matcher.matches()) {
+            String des = arrayListRes.get(0) + arrayListRes.get(0) + arrayListRes.get(0);
+            if (Res.indexOf(des) >= 0) {
                 return Type_ThreeWithOne;
             }
         } else if (arrayListRes.size() == 6) {                         //Type_FourWithTwo
             String Res = "";
             for (String res : arrayListRes) {
-                Log.e("res", res);
                 Res += res;
-                Log.e("Res += res", Res);
             }
+            String des = arrayListRes.get(0) + arrayListRes.get(0) + arrayListRes.get(0) + arrayListRes.get(0);
             Log.e("Res", Res);
-            Pattern pattern = Pattern.compile("[.*]{0,2}[.*]{4}[.*]{0,2}");
-            Matcher matcher = pattern.matcher(Res);
-            if (matcher.matches()) {
+            if (Res.indexOf(des) >= 0) {
                 return Type_FourWithTwo;
             }
         } else if (arrayListRes.size() > 4) {                           //Type_Straight
@@ -124,55 +120,25 @@ public class CardUtil {
             }
         } else if (arrayListRes.size() >= 6 && arrayListRes.size() % 2 == 0) {    //Type_ContinuousPairs
             int count_pair = arrayListRes.size() / 2;
-            String Res = "";
-            for (String res : arrayListRes) {
-                Log.e("res", res);
-                Res += res;
-                Log.e("Res += res", Res);
+            int count_straight = 0;
+            for (int i = 0; i < count_pair - 1; i++) {
+                if (arrayListRes.get(i * 2).equals(arrayListRes.get(i * 2 + 1)) && NextSequenceCard(arrayListRes.get(i * 2)).equals(arrayListRes.get(i * 2 + 2)))
+                    count_straight++;
             }
-            Log.e("Res", Res);
-            String RegEx = "";
-            for (int i = 0; i < count_pair; i++) {
-                RegEx += "[.*]{2}";
-            }
-            Pattern pattern = Pattern.compile(RegEx);
-            Matcher matcher = pattern.matcher(Res);
-            if (matcher.matches()) {
-                int count_straight = 0;
-                for (int i = 0; i < count_pair - 1; i++) {
-                    if (NextSequenceCard(arrayListRes.get(i * 2)).equals(arrayListRes.get(i * 2 + 2)))
-                        count_straight++;
-                }
-                if (count_straight == count_pair) {
-                    return Type_ContinuousPairs;
-                }
+            if (count_straight == count_pair) {
+                return Type_ContinuousPairs;
             }
         } else if (arrayListRes.size() >= 8 && arrayListRes.size() % 4 == 0) {    //Type_Airplane
             int count_three = arrayListRes.size() / 4;
             String Res = "";
             for (String res : arrayListRes) {
-                Log.e("res", res);
                 Res += res;
-                Log.e("Res += res", Res);
             }
             Log.e("Res", Res);
-            String RegEx = ".*";
-            for (int i = 0; i < count_three; i++) {
-                RegEx += "[.*]{3}";
-            }
-            RegEx += ".*";
-            Pattern pattern = Pattern.compile(RegEx);
-            Matcher matcher = pattern.matcher(Res);
-            if (matcher.matches()) {
-                int count_straight = 0;
-                for (int i = 0; i < count_three - 1; i++) {
-                    if (NextSequenceCard(arrayListRes.get(i * 4 + 1)).equals(arrayListRes.get(i * 4 + 5)))
-                        count_straight++;
-                }
-                if (count_straight == count_three) {
-                    return Type_Airplane;
-                }
-            }
+            int indexStart = 0;
+
+
+            return Type_Airplane;
         } else if (arrayListRes.size() == 2) {                            //Type_JokerBoom
             if (getWeight(arrayListRes.get(0)) == 15 && getWeight(arrayListRes.get(1)) == 16) {
                 return Type_JokerBoom;
@@ -244,7 +210,7 @@ public class CardUtil {
             case "joker":
             case "Joker":
             default:
-                return "";
+                return "null";
         }
     }
 

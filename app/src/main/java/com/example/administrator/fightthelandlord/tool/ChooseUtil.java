@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class ChooseUtil {
     public ArrayList<String> ArrayPlayerCards = new ArrayList<>();
 
+
     public ChooseUtil(ArrayList<String> arrayList) {
         this.ArrayPlayerCards = arrayList;
     }
@@ -17,7 +18,7 @@ public class ChooseUtil {
         switch (CardUtil.getType(NowCards)) {
             case CardUtil.Type_Single:
                 for (int i = 0; i < ArrayPlayerCards.size(); i++) {
-                    EmptyArrayList = getSingle(EmptyArrayList, ArrayPlayerCards.get(i));
+                    EmptyArrayList = getSingle(ArrayPlayerCards.get(i));
                     if (EmptyArrayList.size() != 0) {
                         if (CardUtil.getGroupWeight(EmptyArrayList) > CardUtil.getGroupWeight(NowCards)) {
                             break;
@@ -28,7 +29,7 @@ public class ChooseUtil {
                 break;
             case CardUtil.Type_Pair:
                 for (int i = 0; i < ArrayPlayerCards.size(); i++) {
-                    EmptyArrayList = getPair(EmptyArrayList, ArrayPlayerCards.get(i));
+                    EmptyArrayList = getPair(ArrayPlayerCards.get(i));
                     if (EmptyArrayList.size() != 0) {
                         if (CardUtil.getGroupWeight(EmptyArrayList) > CardUtil.getGroupWeight(NowCards)) {
                             break;
@@ -39,7 +40,7 @@ public class ChooseUtil {
                 break;
             case CardUtil.Type_ThreeWithOne:
                 for (int i = 0; i < ArrayPlayerCards.size(); i++) {
-                    EmptyArrayList = getThreeWithOne(EmptyArrayList, ArrayPlayerCards.get(i));
+                    EmptyArrayList = getThreeWithOne(ArrayPlayerCards.get(i));
                     if (EmptyArrayList.size() != 0) {
                         if (CardUtil.getGroupWeight(EmptyArrayList) > CardUtil.getGroupWeight(NowCards)) {
                             break;
@@ -50,7 +51,7 @@ public class ChooseUtil {
                 break;
             case CardUtil.Type_Straight:
                 for (int i = 0; i < ArrayPlayerCards.size(); i++) {
-                    EmptyArrayList = getStraight(EmptyArrayList, ArrayPlayerCards.get(i));
+                    EmptyArrayList = getStraight(ArrayPlayerCards.get(i));
                     if (EmptyArrayList.size() != 0) {
                         if (CardUtil.getGroupWeight(EmptyArrayList) > CardUtil.getGroupWeight(NowCards)) {
                             break;
@@ -61,7 +62,7 @@ public class ChooseUtil {
                 break;
             case CardUtil.Type_ContinuousPairs:
                 for (int i = 0; i < ArrayPlayerCards.size(); i++) {
-                    EmptyArrayList = getContinuousPairs(EmptyArrayList, ArrayPlayerCards.get(i));
+                    EmptyArrayList = getContinuousPairs(ArrayPlayerCards.get(i));
                     if (EmptyArrayList.size() != 0) {
                         if (CardUtil.getGroupWeight(EmptyArrayList) > CardUtil.getGroupWeight(NowCards)) {
                             break;
@@ -72,7 +73,7 @@ public class ChooseUtil {
                 break;
             case CardUtil.Type_Airplane:
                 for (int i = 0; i < ArrayPlayerCards.size(); i++) {
-                    EmptyArrayList = getAirplane(EmptyArrayList, ArrayPlayerCards.get(i));
+                    EmptyArrayList = getAirplane(ArrayPlayerCards.get(i));
                     if (EmptyArrayList.size() != 0) {
                         if (CardUtil.getGroupWeight(EmptyArrayList) > CardUtil.getGroupWeight(NowCards)) {
                             break;
@@ -83,7 +84,7 @@ public class ChooseUtil {
                 break;
             case CardUtil.Type_Boom:
                 for (int i = 0; i < ArrayPlayerCards.size(); i++) {
-                    EmptyArrayList = getBoom(EmptyArrayList, ArrayPlayerCards.get(i));
+                    EmptyArrayList = getBoom(ArrayPlayerCards.get(i));
                     if (EmptyArrayList.size() != 0) {
                         if (CardUtil.getGroupWeight(EmptyArrayList) > CardUtil.getGroupWeight(NowCards)) {
                             break;
@@ -98,15 +99,22 @@ public class ChooseUtil {
                 break;
         }
         if (EmptyArrayList.size() == 0) {
-            if ((EmptyArrayList = getJokerBoom(EmptyArrayList, ArrayPlayerCards.get(0))).size() != 0) {
+            if ((EmptyArrayList = getJokerBoom(ArrayPlayerCards.get(0))).size() != 0) {
                 EmptyArrayList.clear();
-                if ((EmptyArrayList = getAirplane(EmptyArrayList, ArrayPlayerCards.get(0))).size() != 0 && ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
-                } else if ((EmptyArrayList = getContinuousPairs(EmptyArrayList, ArrayPlayerCards.get(0))).size() != 0 && ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
-                } else if ((EmptyArrayList = getStraight(EmptyArrayList, ArrayPlayerCards.get(0))).size() != 0 && ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
-                } else if ((EmptyArrayList = getPair(EmptyArrayList, ArrayPlayerCards.get(0))).size() != 0 && ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
-                } else if ((EmptyArrayList = getSingle(EmptyArrayList, ArrayPlayerCards.get(0))).size() != 0 && ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
-                } else if ((EmptyArrayList = getThreeWithOne(EmptyArrayList, ArrayPlayerCards.get(0))).size() != 0 && ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
-                } else if ((EmptyArrayList = getBoom(EmptyArrayList, ArrayPlayerCards.get(0))).size() != 0 && ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
+                if ((EmptyArrayList = getAirplane(ArrayPlayerCards.get(0))).size() != 0 &&
+                        ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
+                } else if ((EmptyArrayList = getContinuousPairs(ArrayPlayerCards.get(0))).size() != 0 &&
+                        ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
+                } else if ((EmptyArrayList = getStraight(ArrayPlayerCards.get(0))).size() != 0 &&
+                        ArrayPlayerCards.indexOf("joker") == EmptyArrayList.size()) {
+                } else if ((EmptyArrayList = getThreeWithOne(ArrayPlayerCards.get(0))).size() != 0 &&
+                        ArrayPlayerCards.indexOf("joker") == 4) {
+                } else if ((EmptyArrayList = getBoom(ArrayPlayerCards.get(0))).size() != 0 &&
+                        ArrayPlayerCards.indexOf("joker") == 4) {
+                } else if ((EmptyArrayList = getPair(ArrayPlayerCards.get(0))).size() != 0 &&
+                        ArrayPlayerCards.indexOf("joker") == 2) {
+                } else if (!(getSingle(ArrayPlayerCards.get(0))).equals("") &&
+                        ArrayPlayerCards.indexOf("joker") == 1) {
                 } else
                     EmptyArrayList.clear();
             }
@@ -137,17 +145,18 @@ public class ChooseUtil {
             }
         }
         for (int i = 0; i < ArrayPlayerCards.size(); i++) {
-            if ((EmptyArrayList = getAirplane(EmptyArrayList, ArrayPlayerCards.get(i))).size() != 0) {
+            if ((EmptyArrayList = getAirplane(ArrayPlayerCards.get(i))).size() != 0) {
                 break;
-            } else if ((EmptyArrayList = getContinuousPairs(EmptyArrayList, ArrayPlayerCards.get(i))).size() != 0) {
+            } else if ((EmptyArrayList = getContinuousPairs(ArrayPlayerCards.get(i))).size() != 0) {
                 break;
-            } else if ((EmptyArrayList = getStraight(EmptyArrayList, ArrayPlayerCards.get(i))).size() != 0) {
+            } else if ((EmptyArrayList = getStraight(ArrayPlayerCards.get(i))).size() != 0) {
                 break;
-            } else if ((EmptyArrayList = getPair(EmptyArrayList, ArrayPlayerCards.get(i))).size() != 0) {
+            } else if ((EmptyArrayList = getPair(ArrayPlayerCards.get(i))).size() != 0) {
                 break;
-            } else if ((EmptyArrayList = getSingle(EmptyArrayList, ArrayPlayerCards.get(i))).size() != 0) {
+            } else if ((EmptyArrayList = getSingle(ArrayPlayerCards.get(i))).size() != 0) {
                 break;
             }
+
         }
         if (EmptyArrayList.size() == 0)
             EmptyArrayList.add(ArrayPlayerCards.get(0));
@@ -155,47 +164,58 @@ public class ChooseUtil {
         return EmptyArrayList;
     }
 
-    public ArrayList<String> getSingle(ArrayList<String> EmptyArrayList, String firstCard) {
+    /**
+     * getSingle
+     **/
+    public ArrayList<String> getSingle(String firstCard) {
+        ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getSingle");
         ArrayList<String> temp;
-        if (getPair(EmptyArrayList, firstCard).size() == 0 &&
-                getStraight(EmptyArrayList, firstCard).size() == 0 &&
-                getThree(EmptyArrayList, firstCard).size() == 0 &&
-                getContinuousPairs(EmptyArrayList, firstCard).size() == 0 &&
-                getAirplane(EmptyArrayList, firstCard).size() == 0 &&
-                getBoom(EmptyArrayList, firstCard).size() == 0) {
-            if ((temp = getPair(EmptyArrayList, firstCard)).size() != 0) {
+        if (getStraight(firstCard).size() == 0 &&
+                getThree(firstCard).size() == 0 &&
+                getContinuousPairs(firstCard).size() == 0 &&
+                getBoom(firstCard).size() == 0) {
+            if ((temp = getPair(firstCard)).size() != 0) {
                 EmptyArrayList.add(temp.get(0));
             }
         }
         return EmptyArrayList;
     }
 
-    public ArrayList<String> getPair(ArrayList<String> EmptyArrayList, String firstCard) {
+
+    /**
+     * getPair
+     **/
+    public ArrayList<String> getPair(String firstCard) {
+        ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getPair");
-        if (getThree(EmptyArrayList, firstCard).size() == 0 &&
-                getContinuousPairs(EmptyArrayList, firstCard).size() == 0 &&
-                getAirplane(EmptyArrayList, firstCard).size() == 0 &&
-                getBoom(EmptyArrayList, firstCard).size() == 0) {
-            int index1 = ArrayPlayerCards.indexOf(firstCard) + 1;
-            int index2 = index1 + 1;
-            if (index2 < ArrayPlayerCards.size()) {
-                if (ArrayPlayerCards.get(index1).equals(firstCard) && !ArrayPlayerCards.get(index2).equals(firstCard)) {
+        if (getThree(firstCard).size() == 0 &&
+                getBoom(firstCard).size() == 0) {
+            int indexEnd = ArrayPlayerCards.indexOf(firstCard) + 1;
+            if (indexEnd < ArrayPlayerCards.size()) {
+                if (ArrayPlayerCards.get(indexEnd).equals(firstCard)) {
                     EmptyArrayList.add(firstCard);
                     EmptyArrayList.add(firstCard);
                 }
-                Log.e("pair.size",EmptyArrayList.size()+"");
             }
         }
         return EmptyArrayList;
     }
 
-    public ArrayList<String> getStraight(ArrayList<String> EmptyArrayList, String firstCard) {
+    /**
+     * getStraight
+     **/
+    public ArrayList<String> getStraight(String firstCard) {
+        ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getStraight");
-        int index = ArrayPlayerCards.indexOf(CardUtil.NextSequenceCard(firstCard));
-        if (index > 0) {
+        if (getAirplane(firstCard).size() == 0 &&
+                getContinuousPairs(firstCard).size() == 0 &&
+                getBoom(firstCard).size() == 0) {
             EmptyArrayList.add(firstCard);
-            EmptyArrayList = getStraight(EmptyArrayList, ArrayPlayerCards.get(index));
+            int index = ArrayPlayerCards.indexOf(CardUtil.NextSequenceCard(firstCard));
+            if (index > 0) {
+                EmptyArrayList = getStraight(ArrayPlayerCards.get(index));
+            }
         }
         if (EmptyArrayList.size() < 5) {
             EmptyArrayList.clear();
@@ -203,38 +223,56 @@ public class ChooseUtil {
         return EmptyArrayList;
     }
 
-    public ArrayList<String> getThree(ArrayList<String> EmptyArrayList, String firstCard) {
+    /**
+     * getJokerBoom
+     **/
+    public ArrayList<String> getThree(String firstCard) {
+        ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getThree");
-        int index1 = ArrayPlayerCards.indexOf(firstCard) + 1;
-        int index2 = index1 + 1;
-        if (index2 < ArrayPlayerCards.size()) {
-            if (ArrayPlayerCards.get(index1).equals(firstCard) && ArrayPlayerCards.get(index2).equals(firstCard)) {
-                EmptyArrayList.add(firstCard);
-                EmptyArrayList.add(firstCard);
-                EmptyArrayList.add(firstCard);
+        if (getBoom(firstCard).size() == 0) {
+            int indexEnd = ArrayPlayerCards.indexOf(firstCard) + 2;
+            if (indexEnd < ArrayPlayerCards.size()) {
+                if (ArrayPlayerCards.get(indexEnd).equals(firstCard)) {
+                    EmptyArrayList.add(firstCard);
+                    EmptyArrayList.add(firstCard);
+                    EmptyArrayList.add(firstCard);
+                }
             }
         }
         return EmptyArrayList;
     }
 
-    public ArrayList<String> getThreeWithOne(ArrayList<String> EmptyArrayList, String firstCard) {
+    /**
+     * getThreeWithOne
+     **/
+    public ArrayList<String> getThreeWithOne(String firstCard) {
+        ArrayList<String> EmptyArrayList = new ArrayList<>();
+        ArrayList<String> temp;
         Log.e("ChooseUtil", "getThreeWithOne");
-        EmptyArrayList = getThree(EmptyArrayList, firstCard);
-        EmptyArrayList.add(getSingle(EmptyArrayList, firstCard).get(0));
+        if (getThree(firstCard).size() != 0) {
+            for (int i = 0; i < ArrayPlayerCards.size(); i++) {
+                if ((temp = getSingle(ArrayPlayerCards.get(i))).size() != 0) {
+                    EmptyArrayList = getThree(firstCard);
+                    EmptyArrayList.add(temp.get(0));
+                }
+            }
+        }
         return EmptyArrayList;
     }
 
-    public ArrayList<String> getContinuousPairs(ArrayList<String> EmptyArrayList, String firstCard) {
+    /**
+     * getContinuousPairs
+     **/
+    public ArrayList<String> getContinuousPairs(String firstCard) {
+        ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getContinuousPairs");
-        int index1 = ArrayPlayerCards.indexOf(firstCard) + 1;
-        if (index1 < ArrayPlayerCards.size()) {
-            if (ArrayPlayerCards.get(index1).equals(firstCard)) {
-                EmptyArrayList.add(firstCard);
-                EmptyArrayList.add(firstCard);
-                int index2 = ArrayPlayerCards.indexOf(CardUtil.NextSequenceCard(firstCard));
-                if (index2 > 0) {
-                    getContinuousPairs(EmptyArrayList, ArrayPlayerCards.get(index2));
-                }
+        while (getPair(firstCard).size() != 0) {
+            EmptyArrayList.add(firstCard);
+            EmptyArrayList.add(firstCard);
+            if (ArrayPlayerCards.indexOf(firstCard) + 2 < ArrayPlayerCards.size()) {
+                firstCard = CardUtil.NextSequenceCard(firstCard);
+            } else {
+                break;
             }
         }
         if (EmptyArrayList.size() / 2 < 3) {
@@ -243,34 +281,42 @@ public class ChooseUtil {
         return EmptyArrayList;
     }
 
-    public ArrayList<String> getAirplane(ArrayList<String> EmptyArrayList, String firstCard) {
+    /**
+     * getAirplane
+     **/
+    public ArrayList<String> getAirplane(String firstCard) {
+        ArrayList<String> EmptyArrayList = new ArrayList<>();
+        ArrayList<String> temp;
         Log.e("ChooseUtil", "getAirplane");
-        int index1 = ArrayPlayerCards.indexOf(firstCard) + 1;
-        int index2 = index1 + 1;
-        if (index2 < ArrayPlayerCards.size()) {
-            if (ArrayPlayerCards.get(index1).equals(firstCard) && ArrayPlayerCards.get(index2).equals(firstCard)) {
-                EmptyArrayList.add(firstCard);
-                EmptyArrayList.add(firstCard);
-                EmptyArrayList.add(firstCard);
-                int index3 = ArrayPlayerCards.indexOf(CardUtil.NextSequenceCard(firstCard));
-                if (index3 > 0) {
-                    getContinuousPairs(EmptyArrayList, ArrayPlayerCards.get(index2));
+        int indexSingle = 0;
+        while (getThree(firstCard).size() != 0) {
+            for (int i = indexSingle; i < ArrayPlayerCards.size(); i++) {
+                if ((temp = getSingle(ArrayPlayerCards.get(i))).size() != 0) {
+                    EmptyArrayList.add(firstCard);
+                    EmptyArrayList.add(firstCard);
+                    EmptyArrayList.add(firstCard);
+                    EmptyArrayList.add(temp.get(0));
+                    indexSingle = i + 1;
+                    break;
                 }
             }
+            firstCard = CardUtil.NextSequenceCard(firstCard);
         }
-        if (EmptyArrayList.size() / 3 < 1) {
+        if (EmptyArrayList.size() / 4 < 2) {
             EmptyArrayList.clear();
         }
         return EmptyArrayList;
     }
 
-    public ArrayList<String> getBoom(ArrayList<String> EmptyArrayList, String firstCard) {
+    /**
+     * getBoom
+     **/
+    public ArrayList<String> getBoom(String firstCard) {
+        ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getBoom");
-        int index1 = ArrayPlayerCards.indexOf(firstCard) + 1;
-        int index2 = index1 + 1;
-        int index3 = index2 + 1;
-        if (index3 < ArrayPlayerCards.size()) {
-            if (ArrayPlayerCards.get(index1).equals(firstCard) && ArrayPlayerCards.get(index2).equals(firstCard) && ArrayPlayerCards.get(index3).equals(firstCard)) {
+        int indexEnd = ArrayPlayerCards.indexOf(firstCard) + 3;
+        if (indexEnd < ArrayPlayerCards.size()) {
+            if (ArrayPlayerCards.get(indexEnd).equals(firstCard)) {
                 EmptyArrayList.add(firstCard);
                 EmptyArrayList.add(firstCard);
                 EmptyArrayList.add(firstCard);
@@ -280,7 +326,11 @@ public class ChooseUtil {
         return EmptyArrayList;
     }
 
-    public ArrayList<String> getJokerBoom(ArrayList<String> EmptyArrayList, String firstCard) {
+    /**
+     * getJokerBoom
+     **/
+    public ArrayList<String> getJokerBoom(String firstCard) {
+        ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getJokerBoom");
         if (ArrayPlayerCards.indexOf("joker") > 0 && ArrayPlayerCards.indexOf("Joker") > 0) {
             EmptyArrayList.add("joker");
