@@ -4,8 +4,6 @@ package com.example.administrator.fightthelandlord.tool;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 卡牌工具类
@@ -89,13 +87,7 @@ public class CardUtil {
                 return Type_Boom;
             }
         } else if (arrayListRes.size() == 4) {                         //Type_ThreeWithOne
-            String Res = "";
-            for (String res : arrayListRes) {
-                Res += res;
-            }
-            Log.e("Res", Res);
-            String des = arrayListRes.get(0) + arrayListRes.get(0) + arrayListRes.get(0);
-            if (Res.indexOf(des) >= 0) {
+            if ((getWeight(arrayListRes.get(1))>getWeight(arrayListRes.get(0))&&arrayListRes.get(3).equals(arrayListRes.get(1)))||(getWeight(arrayListRes.get(3))>getWeight(arrayListRes.get(2))&&arrayListRes.get(0).equals(arrayListRes.get(2)))) {
                 return Type_ThreeWithOne;
             }
         } else if (arrayListRes.size() == 6) {                         //Type_FourWithTwo
@@ -103,7 +95,7 @@ public class CardUtil {
             for (String res : arrayListRes) {
                 Res += res;
             }
-            String des = arrayListRes.get(0) + arrayListRes.get(0) + arrayListRes.get(0) + arrayListRes.get(0);
+            String des = arrayListRes.get(2) + arrayListRes.get(2) + arrayListRes.get(2) + arrayListRes.get(2);
             Log.e("Res", Res);
             if (Res.indexOf(des) >= 0) {
                 return Type_FourWithTwo;
