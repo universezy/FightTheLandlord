@@ -156,7 +156,6 @@ public class ChooseUtil {
             } else if ((EmptyArrayList = getSingle(ArrayPlayerCards.get(i))).size() != 0) {
                 break;
             }
-
         }
         if (EmptyArrayList.size() == 0)
             EmptyArrayList.add(ArrayPlayerCards.get(0));
@@ -171,10 +170,7 @@ public class ChooseUtil {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getSingle");
         ArrayList<String> temp;
-        if (getStraight(firstCard).size() == 0 &&
-                getThree(firstCard).size() == 0 &&
-                getContinuousPairs(firstCard).size() == 0 &&
-                getBoom(firstCard).size() == 0) {
+        if (getStraight(firstCard).size() == 0 ) {
             if ((temp = getPair(firstCard)).size() != 0) {
                 EmptyArrayList.add(temp.get(0));
             }
@@ -182,15 +178,13 @@ public class ChooseUtil {
         return EmptyArrayList;
     }
 
-
     /**
      * getPair
      **/
     public ArrayList<String> getPair(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getPair");
-        if (getThree(firstCard).size() == 0 &&
-                getBoom(firstCard).size() == 0) {
+        if (getThree(firstCard).size() == 0 ) {
             int indexEnd = ArrayPlayerCards.indexOf(firstCard) + 1;
             if (indexEnd < ArrayPlayerCards.size()) {
                 if (ArrayPlayerCards.get(indexEnd).equals(firstCard)) {
@@ -208,9 +202,7 @@ public class ChooseUtil {
     public ArrayList<String> getStraight(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
         Log.e("ChooseUtil", "getStraight");
-        if (getAirplane(firstCard).size() == 0 &&
-                getContinuousPairs(firstCard).size() == 0 &&
-                getBoom(firstCard).size() == 0) {
+        if (getContinuousPairs(firstCard).size() == 0 ) {
             EmptyArrayList.add(firstCard);
             int index = ArrayPlayerCards.indexOf(CardUtil.NextSequenceCard(firstCard));
             if (index > 0) {

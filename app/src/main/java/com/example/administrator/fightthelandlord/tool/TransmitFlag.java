@@ -20,7 +20,6 @@ public class TransmitFlag {
     public static final String TurnEnd = "TurnEnd";
     public static final String Victor = "Victor";
     public static final String Save = "Save";
-    public static final String NowTurn ="NowTurn";
     public static final String NowCards ="NowCards";
     public static final String PlayerCards ="PlayerCards";
     public static final String ChooseCards ="ChooseCards";

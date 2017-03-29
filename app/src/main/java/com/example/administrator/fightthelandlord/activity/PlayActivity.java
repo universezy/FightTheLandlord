@@ -166,7 +166,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 ArrayChooseCards.clear();
                 ChooseUtil chooseUtil = new ChooseUtil(ArrayPlayerCards);
                 ArrayChooseCards = chooseUtil.chooseGroup(ArrayNowCards);
-
                 for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
                     mllPlayerCards.getChildAt(i).setBackgroundColor(Color.GRAY);
                 }
@@ -175,10 +174,12 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     ArrayChooseCards = chooseUtil.chooseGroup();
                 } else {
                     ArrayChooseCards = chooseUtil.chooseGroup(ArrayNowCards);
+                    int index = 0;
                     for (int i = 0; i < ArrayChooseCards.size(); i++) {
-                        for (int j = 0; j < mllPlayerCards.getChildCount(); j++) {
+                        for (int j = index; j < mllPlayerCards.getChildCount(); j++) {
                             if (((TextView) mllPlayerCards.getChildAt(j).findViewById(R.id.tvItemCard)).getText().equals(ArrayChooseCards.get(i))) {
-                                mllPlayerCards.getChildAt(i).setBackgroundColor(Color.BLUE);
+                                index = j+1;
+                                mllPlayerCards.getChildAt(j).setBackgroundColor(Color.BLUE);
                                 break;
                             }
                         }
@@ -188,7 +189,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnPlay:
                 if (ArrayChooseCards.size() == 0) return;
                 ArrayChooseCards = CardUtil.SortByWeight(ArrayChooseCards);
-                Log.e("getType", CardUtil.getType(ArrayChooseCards));
+                Log.e("ArrayChooseCardsGetType", CardUtil.getType(ArrayChooseCards));
                 if (CardUtil.getType(ArrayChooseCards) != CardUtil.Type_Wrong) {
                     if (ArrayNowCards.size() != 0) {
                         if (CardUtil.getGroupWeight(ArrayChooseCards) <= CardUtil.getGroupWeight(ArrayNowCards)) {
@@ -335,6 +336,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case TransmitFlag.NowPlayer:
                     NowPlayer = intent.getStringExtra(TransmitFlag.NowPlayer);
+                    Log.e("NowPlayer", NowPlayer);
                     int rest1 = intent.getIntExtra(TransmitFlag.RestCards, 0);
                     NowPlayer(rest1);
                     break;
