@@ -21,7 +21,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.fightthelandlord.R;
 import com.example.administrator.fightthelandlord.service.PlayService;
@@ -29,7 +31,6 @@ import com.example.administrator.fightthelandlord.tool.CardUtil;
 import com.example.administrator.fightthelandlord.tool.ChooseUtil;
 import com.example.administrator.fightthelandlord.tool.TransmitFlag;
 import com.example.administrator.fightthelandlord.view.TableView;
-import com.example.administrator.fightthelandlord.view.TableViewResult;
 
 import java.util.ArrayList;
 
@@ -42,8 +43,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mtvLandlord, mtvRestComputer1, mtvWordsComputer1, mtvRestComputer2, mtvWordsComputer2, mtvRestPlayer, mtvWordsPlayer;
     private ImageView ivComputer1, ivComputer2;
     private TableView mvTableComputer1, mvTableComputer2, mvTablePlayer, mvTableLandlord;
-    private TableViewResult mvTableResult;
     private LinearLayout mllComputer1, mllComputer2, mllPlayer, mllButton, mllPlayerCards;
+    private PopupWindow popupWindow;
 
     private Handler PlayHandler = new Handler();
     protected PlayService.ServiceBinder binder;
@@ -138,7 +139,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         mvTablePlayer.setColumnAndRow(10, 2);
         mvTableLandlord = (TableView) findViewById(R.id.vTableLandlord);
         mvTableLandlord.setColumnAndRow(3, 1);
-        mvTableResult = (TableViewResult) findViewById(R.id.vTableResult);
 
         mllButton = (LinearLayout) findViewById(R.id.llButton);
         mllButton.setVisibility(View.INVISIBLE);
@@ -147,7 +147,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         mllPlayer = (LinearLayout) findViewById(R.id.llPlayer);
         mllPlayerCards = (LinearLayout) findViewById(R.id.llPlayerCards);
     }
-
 
     @Override
     public void onClick(View v) {
@@ -169,7 +168,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
                     mllPlayerCards.getChildAt(i).setBackgroundColor(Color.GRAY);
                 }
-                Log.e("ArrayNowCards", ArrayNowCards.size() + "");
                 if (ArrayNowCards.size() == 0) {
                     ArrayChooseCards = chooseUtil.chooseGroup();
                 } else {
@@ -178,7 +176,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     for (int i = 0; i < ArrayChooseCards.size(); i++) {
                         for (int j = index; j < mllPlayerCards.getChildCount(); j++) {
                             if (((TextView) mllPlayerCards.getChildAt(j).findViewById(R.id.tvItemCard)).getText().equals(ArrayChooseCards.get(i))) {
-                                index = j+1;
+                                index = j + 1;
                                 mllPlayerCards.getChildAt(j).setBackgroundColor(Color.BLUE);
                                 break;
                             }
@@ -189,8 +187,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnPlay:
                 if (ArrayChooseCards.size() == 0) return;
                 ArrayChooseCards = CardUtil.SortByWeight(ArrayChooseCards);
-                Log.e("ArrayChooseCardsGetType", CardUtil.getType(ArrayChooseCards));
-                if (CardUtil.getType(ArrayChooseCards) != CardUtil.Type_Wrong) {
+                Log.e("ArrayChooseCardsGetType", CardUtil.getGroupType(ArrayChooseCards));
+                if (CardUtil.getGroupType(ArrayChooseCards) != CardUtil.Type_Wrong) {
                     if (ArrayNowCards.size() != 0) {
                         if (CardUtil.getGroupWeight(ArrayChooseCards) <= CardUtil.getGroupWeight(ArrayNowCards)) {
                             return;
@@ -204,6 +202,16 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     ChooseCards();
                 }
+                break;
+            case R.id.btnBackToMain:
+                finish();
+                popupWindow.dismiss();
+                break;
+            case R.id.btnNewGame:
+                Intent intent_NewGame = new Intent(TransmitFlag.PlayService);
+                intent_NewGame.putExtra(TransmitFlag.State, TransmitFlag.NewGame);
+                sendBroadcast(intent_NewGame);
+                popupWindow.dismiss();
                 break;
             default:
                 break;
@@ -221,6 +229,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         intent_ChooseCards.putExtra(TransmitFlag.ChooseCards, ArrayChooseCards);
         sendBroadcast(intent_ChooseCards);
         for (String str : ArrayChooseCards) {
+            Log.e("chooseCards", str);
             ArrayPlayerCards.remove(str);
         }
         ArrayChooseCards.clear();
@@ -283,6 +292,24 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * 显示结果
+     **/
+    private void ShowResult(String victor) {
+        Toast.makeText(PlayActivity.this, victor + " win!", Toast.LENGTH_SHORT).show();
+
+        View contentView = LayoutInflater.from(PlayActivity.this).inflate(R.layout.item_victor, null);
+        popupWindow = new PopupWindow(contentView, 800, 400, true);
+        popupWindow.setContentView(contentView);
+        TextView mtvVictor = (TextView) contentView.findViewById(R.id.tvVictor);
+        Button mbtnBack = (Button) contentView.findViewById(R.id.btnBackToMain);
+        mbtnBack.setOnClickListener(this);
+        Button mbtnNew = (Button) contentView.findViewById(R.id.btnNewGame);
+        mbtnNew.setOnClickListener(this);
+        mtvVictor.setText(victor);
+        View rootView = LayoutInflater.from(PlayActivity.this).inflate(R.layout.activity_play, null);
+        popupWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+    }
 
     /**
      * 保存进度
@@ -303,14 +330,14 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                         intent_Save.putExtra(TransmitFlag.State, TransmitFlag.Save);
                         sendBroadcast(intent_Save);
                         dialog.dismiss();
-                        PlayActivity.this.finish();
+                        finish();
                     }
                 })
                 .setNeutralButton("Don't", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        PlayActivity.this.finish();
+                        finish();
                     }
                 })
                 .show();
@@ -368,10 +395,14 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case TransmitFlag.ChooseCards:
                     ArrayNowCards = intent.getStringArrayListExtra(TransmitFlag.ChooseCards);
+                    boolean force = intent.getBooleanExtra("force", false);
                     mllButton.setVisibility(View.VISIBLE);
+                    if (force)
+                        mbtnPass.setVisibility(View.GONE);
                     break;
                 case TransmitFlag.TurnEnd:
-
+                    String victor = intent.getStringExtra(TransmitFlag.Victor);
+                    ShowResult(victor);
                     break;
                 default:
                     break;

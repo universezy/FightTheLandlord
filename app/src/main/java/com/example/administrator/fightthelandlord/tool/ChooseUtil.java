@@ -1,6 +1,5 @@
 package com.example.administrator.fightthelandlord.tool;
 
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -14,8 +13,7 @@ public class ChooseUtil {
 
     public ArrayList<String> chooseGroup(ArrayList<String> NowCards) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
-        Log.e("getType chooseGroup()", CardUtil.getType(NowCards));
-        switch (CardUtil.getType(NowCards)) {
+        switch (CardUtil.getGroupType(NowCards)) {
             case CardUtil.Type_Single:
                 for (int i = 0; i < ArrayPlayerCards.size(); i++) {
                     EmptyArrayList = getSingle(ArrayPlayerCards.get(i));
@@ -124,23 +122,21 @@ public class ChooseUtil {
     }
 
     public ArrayList<String> chooseGroup() {
-        Log.e("getType chooseGroup", "null");
         ArrayList<String> EmptyArrayList = new ArrayList<>();
-
         if (ArrayPlayerCards.size() == 2) {
-            if (CardUtil.getType(ArrayPlayerCards).equals(CardUtil.Type_JokerBoom)) {
+            if (CardUtil.getGroupType(ArrayPlayerCards).equals(CardUtil.Type_JokerBoom)) {
                 EmptyArrayList = ArrayPlayerCards;
             }
         } else if (ArrayPlayerCards.size() == 3) {
-            if (CardUtil.getType(ArrayPlayerCards).equals(CardUtil.Type_Three)) {
+            if (CardUtil.getGroupType(ArrayPlayerCards).equals(CardUtil.Type_Three)) {
                 EmptyArrayList = ArrayPlayerCards;
             }
         } else if (ArrayPlayerCards.size() == 4) {
-            if (CardUtil.getType(ArrayPlayerCards).equals(CardUtil.Type_Boom)) {
+            if (CardUtil.getGroupType(ArrayPlayerCards).equals(CardUtil.Type_Boom)) {
                 EmptyArrayList = ArrayPlayerCards;
             }
         } else if (ArrayPlayerCards.size() == 6) {
-            if (CardUtil.getType(ArrayPlayerCards).equals(CardUtil.Type_FourWithTwo)) {
+            if (CardUtil.getGroupType(ArrayPlayerCards).equals(CardUtil.Type_FourWithTwo)) {
                 EmptyArrayList = ArrayPlayerCards;
             }
         }
@@ -168,7 +164,6 @@ public class ChooseUtil {
      **/
     public ArrayList<String> getSingle(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
-        Log.e("ChooseUtil", "getSingle");
         ArrayList<String> temp;
         if (getStraight(firstCard).size() == 0 ) {
             if ((temp = getPair(firstCard)).size() != 0) {
@@ -183,7 +178,6 @@ public class ChooseUtil {
      **/
     public ArrayList<String> getPair(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
-        Log.e("ChooseUtil", "getPair");
         if (getThree(firstCard).size() == 0 ) {
             int indexEnd = ArrayPlayerCards.indexOf(firstCard) + 1;
             if (indexEnd < ArrayPlayerCards.size()) {
@@ -201,7 +195,6 @@ public class ChooseUtil {
      **/
     public ArrayList<String> getStraight(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
-        Log.e("ChooseUtil", "getStraight");
         if (getContinuousPairs(firstCard).size() == 0 ) {
             EmptyArrayList.add(firstCard);
             int index = ArrayPlayerCards.indexOf(CardUtil.NextSequenceCard(firstCard));
@@ -220,7 +213,6 @@ public class ChooseUtil {
      **/
     public ArrayList<String> getThree(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
-        Log.e("ChooseUtil", "getThree");
         if (getBoom(firstCard).size() == 0) {
             int indexEnd = ArrayPlayerCards.indexOf(firstCard) + 2;
             if (indexEnd < ArrayPlayerCards.size()) {
@@ -240,7 +232,6 @@ public class ChooseUtil {
     public ArrayList<String> getThreeWithOne(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
         ArrayList<String> temp;
-        Log.e("ChooseUtil", "getThreeWithOne");
         if (getThree(firstCard).size() != 0) {
             for (int i = 0; i < ArrayPlayerCards.size(); i++) {
                 if ((temp = getSingle(ArrayPlayerCards.get(i))).size() != 0) {
@@ -257,7 +248,6 @@ public class ChooseUtil {
      **/
     public ArrayList<String> getContinuousPairs(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
-        Log.e("ChooseUtil", "getContinuousPairs");
         while (getPair(firstCard).size() != 0) {
             EmptyArrayList.add(firstCard);
             EmptyArrayList.add(firstCard);
@@ -279,7 +269,6 @@ public class ChooseUtil {
     public ArrayList<String> getAirplane(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
         ArrayList<String> temp;
-        Log.e("ChooseUtil", "getAirplane");
         int indexSingle = 0;
         while (getThree(firstCard).size() != 0) {
             for (int i = indexSingle; i < ArrayPlayerCards.size(); i++) {
@@ -305,7 +294,6 @@ public class ChooseUtil {
      **/
     public ArrayList<String> getBoom(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
-        Log.e("ChooseUtil", "getBoom");
         int indexEnd = ArrayPlayerCards.indexOf(firstCard) + 3;
         if (indexEnd < ArrayPlayerCards.size()) {
             if (ArrayPlayerCards.get(indexEnd).equals(firstCard)) {
@@ -323,7 +311,6 @@ public class ChooseUtil {
      **/
     public ArrayList<String> getJokerBoom(String firstCard) {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
-        Log.e("ChooseUtil", "getJokerBoom");
         if (ArrayPlayerCards.indexOf("joker") > 0 && ArrayPlayerCards.indexOf("Joker") > 0) {
             EmptyArrayList.add("joker");
             EmptyArrayList.add("Joker");

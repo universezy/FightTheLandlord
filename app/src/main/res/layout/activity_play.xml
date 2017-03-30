@@ -141,13 +141,7 @@
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
-                                android:layout_weight="5" />
-
-                            <com.example.administrator.fightthelandlord.view.TableViewResult
-                                android:id="@+id/vTableResult"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="25" />
+                                android:layout_weight="30" />
 
                         </LinearLayout>
 
@@ -198,54 +192,42 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
                     android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3" />
 
                     <Button
                         android:id="@+id/btnPass"
-                        android:layout_width="0dp"
+                        android:layout_width="30dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="PASS"
                         android:textSize="10dp" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
-
                     <Button
                         android:id="@+id/btnHint"
-                        android:layout_width="0dp"
+                        android:layout_width="30dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="HINT"
                         android:textSize="10dp" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
-
                     <Button
                         android:id="@+id/btnPlay"
-                        android:layout_width="0dp"
+                        android:layout_width="30dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="PLAY"
                         android:textSize="10dp" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -317,9 +299,7 @@
                     android:orientation="horizontal"
                     android:showDividers="middle|beginning|end">
 
-
                 </LinearLayout>
-
 
             </HorizontalScrollView>
 

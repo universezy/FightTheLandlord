@@ -299,7 +299,9 @@ public class PlayService extends Service {
      * 单个回合选牌
      **/
     private void Fight_ChooseCards(final CustomEntity customEntity) {
+        boolean force= false;
         if (Count == 2) {
+            force = true;
             ArrayNowCards.clear();
             Count = 0;
         }
@@ -313,6 +315,7 @@ public class PlayService extends Service {
         if (NowPlayer.equals(playerEntity.getName())) {
             Intent intent_choose = new Intent(TransmitFlag.PlayActivity);
             intent_choose.putExtra(TransmitFlag.State, TransmitFlag.ChooseCards);
+            intent_choose.putExtra("force", force);
             intent_choose.putExtra(TransmitFlag.ChooseCards, ArrayNowCards);
             sendBroadcast(intent_choose);
         } else {
@@ -345,7 +348,7 @@ public class PlayService extends Service {
 
         if (customEntity.getArrayCard().size() == 0) {
             TurnEnd = true;
-            ShowResult();
+
             UpdateUserDate();
             Intent intentTurnEnd = new Intent(TransmitFlag.PlayActivity);
             intentTurnEnd.putExtra(TransmitFlag.State, TransmitFlag.TurnEnd);
@@ -394,24 +397,19 @@ public class PlayService extends Service {
         TurnEnd = false;
         switch (NowPlayer) {
             case TransmitFlag.Computer1:
-                CyclicFight(computer1Entity, computer2Entity, playerEntity);
+                CyclicFight(computer1Entity, playerEntity, computer2Entity);
                 break;
             case TransmitFlag.Computer2:
-                CyclicFight(computer2Entity, playerEntity, computer1Entity);
+                CyclicFight(computer2Entity, computer1Entity, playerEntity);
                 break;
             case TransmitFlag.Player:
-                CyclicFight(playerEntity, computer1Entity, computer2Entity);
+                CyclicFight(playerEntity, computer2Entity, computer1Entity);
             default:
                 break;
         }
     }
 
-    /**
-     * 显示结果
-     **/
-    private void ShowResult() {
-        Toast.makeText(getApplicationContext(), NowPlayer + " win!", Toast.LENGTH_SHORT).show();
-    }
+
 
     /**
      * 更新用户数据
@@ -503,6 +501,9 @@ public class PlayService extends Service {
             String strState = intent.getStringExtra(TransmitFlag.State);
             Log.e("PlayServiceReceiver", "" + strState);
             switch (strState) {
+                case TransmitFlag.NewGame:
+                    Play();
+                    break;
                 case TransmitFlag.Save:
                     TurnEnd = true;
                     RestCardComputer1 = computer1Entity.getArrayCard();
