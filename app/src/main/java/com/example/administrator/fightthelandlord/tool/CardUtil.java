@@ -65,7 +65,7 @@ public class CardUtil {
      * 获取组合牌的类型
      **/
     public static String getGroupType(ArrayList<String> arrayListRes) {
-        arrayListRes = SortByWeight(arrayListRes);
+        arrayListRes = sortByWeight(arrayListRes);
         if (arrayListRes.size() == 1)
             return Type_Single;
         else if (arrayListRes.size() == 2) {
@@ -98,7 +98,7 @@ public class CardUtil {
         if (arrayListRes.size() > 4) {
             int count_straight = 0;
             for (int i = 0; i < arrayListRes.size() - 1; i++) {
-                if (NextSequenceCard(arrayListRes.get(i)).equals(arrayListRes.get(i + 1)))
+                if (nextSequenceCard(arrayListRes.get(i)).equals(arrayListRes.get(i + 1)))
                     count_straight++;
             }
             if (count_straight == arrayListRes.size() - 1)
@@ -108,7 +108,7 @@ public class CardUtil {
             int count_straight = 0;
             for (int i = 0; i < count_pair - 1; i++) {
                 if (arrayListRes.get(i * 2).equals(arrayListRes.get(i * 2 + 1)) &&
-                        NextSequenceCard(arrayListRes.get(i * 2)).equals(arrayListRes.get(i * 2 + 2)))
+                        nextSequenceCard(arrayListRes.get(i * 2)).equals(arrayListRes.get(i * 2 + 2)))
                     count_straight++;
             }
             if (count_straight == count_pair)
@@ -167,7 +167,7 @@ public class CardUtil {
     /**
      * 获取顺序下一张牌
      **/
-    public static String NextSequenceCard(String card) {
+    public static String nextSequenceCard(String card) {
         switch (card) {
             case "3":
                 return "4";
@@ -203,7 +203,7 @@ public class CardUtil {
     /**
      * 按权值排序
      **/
-    public static ArrayList<String> SortByWeight(ArrayList<String> arrayList) {
+    public static ArrayList<String> sortByWeight(ArrayList<String> arrayList) {
         ArrayList<String> ArraySort = arrayList;
         boolean hasChanged = false;
         for (int i = 0; i < arrayList.size() && !hasChanged; i++) {

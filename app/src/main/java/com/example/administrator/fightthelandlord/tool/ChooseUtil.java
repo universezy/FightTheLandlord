@@ -117,7 +117,7 @@ public class ChooseUtil {
                     EmptyArrayList.clear();
             }
         }
-        EmptyArrayList = CardUtil.SortByWeight(EmptyArrayList);
+        EmptyArrayList = CardUtil.sortByWeight(EmptyArrayList);
         return EmptyArrayList;
     }
 
@@ -155,7 +155,7 @@ public class ChooseUtil {
         }
         if (EmptyArrayList.size() == 0)
             EmptyArrayList.add(ArrayPlayerCards.get(0));
-        EmptyArrayList = CardUtil.SortByWeight(EmptyArrayList);
+        EmptyArrayList = CardUtil.sortByWeight(EmptyArrayList);
         return EmptyArrayList;
     }
 
@@ -197,7 +197,7 @@ public class ChooseUtil {
         ArrayList<String> EmptyArrayList = new ArrayList<>();
         if (getContinuousPairs(firstCard).size() == 0 ) {
             EmptyArrayList.add(firstCard);
-            int index = ArrayPlayerCards.indexOf(CardUtil.NextSequenceCard(firstCard));
+            int index = ArrayPlayerCards.indexOf(CardUtil.nextSequenceCard(firstCard));
             if (index > 0) {
                 EmptyArrayList = getStraight(ArrayPlayerCards.get(index));
             }
@@ -252,7 +252,7 @@ public class ChooseUtil {
             EmptyArrayList.add(firstCard);
             EmptyArrayList.add(firstCard);
             if (ArrayPlayerCards.indexOf(firstCard) + 2 < ArrayPlayerCards.size()) {
-                firstCard = CardUtil.NextSequenceCard(firstCard);
+                firstCard = CardUtil.nextSequenceCard(firstCard);
             } else {
                 break;
             }
@@ -281,7 +281,7 @@ public class ChooseUtil {
                     break;
                 }
             }
-            firstCard = CardUtil.NextSequenceCard(firstCard);
+            firstCard = CardUtil.nextSequenceCard(firstCard);
         }
         if (EmptyArrayList.size() / 4 < 2) {
             EmptyArrayList.clear();

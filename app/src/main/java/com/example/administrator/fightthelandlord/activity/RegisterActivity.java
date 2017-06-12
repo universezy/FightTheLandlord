@@ -36,13 +36,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        InitLayout();
+        initLayout();
     }
 
     /**
      * 初始化布局
      **/
-    private void InitLayout() {
+    private void initLayout() {
         mbtnBack = (Button) findViewById(R.id.btnBack);
         mbtnBack.setOnClickListener(this);
         mbtnRegister = (Button) findViewById(R.id.btnRegister);
@@ -76,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             e.printStackTrace();
                         }
                     }
-                    if (Save(file)) {
+                    if (save(file)) {
                         RegisterHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -97,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     /**
      * 用户数据存档
      **/
-    private boolean Save(File file) {
+    private boolean save(File file) {
         try {
             FileReader fr1 = new FileReader(file);
             BufferedReader br1 = new BufferedReader(fr1);

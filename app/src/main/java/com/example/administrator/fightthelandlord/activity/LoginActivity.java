@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,8 +17,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 登录
@@ -36,13 +33,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        InitLayout();
+        initLayout();
     }
 
     /**
      * 初始化布局
      **/
-    private void InitLayout() {
+    private void initLayout() {
         metID = (EditText) findViewById(R.id.etID);
         metPassword = (EditText) findViewById(R.id.etPassword);
 
@@ -67,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (!file.exists()) {
                     Toast.makeText(LoginActivity.this, "No user data file found.\nPlease register firstly", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (Check(file)) {
+                    if (check(file)) {
                         LoginHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -92,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     /**
      * 登录校验
      **/
-    private boolean Check(File file) {
+    private boolean check(File file) {
         try {
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);

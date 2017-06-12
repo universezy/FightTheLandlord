@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         UserID = getIntent().getStringExtra(TransmitFlag.UserID);
 
-        InitLayout();
-        InitUserData();
+        initLayout();
+        initUserData();
 
         //注册接收器
         IntentFilter intentFilter = new IntentFilter(TransmitFlag.MainActivity);
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 初始化布局
      **/
-    private void InitLayout() {
+    private void initLayout() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mtvName = (TextView) findViewById(R.id.tvName);
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 初始化用户数据
      **/
-    private void InitUserData() {
+    private void initUserData() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
-    private void UpdateUserDate(boolean Win) {
+    private void updateUserDate(boolean Win) {
         if (Win) {
             UserRecord_win = Integer.parseInt(UserRecord_win) + 1 + "";
         } else {
@@ -178,10 +178,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             rate = (float) Integer.parseInt(UserRecord_win) / (float) total * 100;
         }
         mtvWinRate.setText(numberFormat.format(rate) + "%");
-        Save(UserName, UserLevel, UserRecord_win, UserRecord_lose);
+        save(UserName, UserLevel, UserRecord_win, UserRecord_lose);
     }
 
-    private void Save(String Name, String Level, String Record_Win, String Record_Lose) {
+    private void save(String Name, String Level, String Record_Win, String Record_Lose) {
         try {
             File UserFile = new File(MainActivity.this.getFilesDir(), UserID + "_user_data.xml");
             //获取XmlSerializer类的实例  通过xml这个工具类去获取
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             switch (strState) {
                 case TransmitFlag.UpdateUserData:
                     boolean Win = intent.getBooleanExtra("Win", false);
-                    UpdateUserDate(Win);
+                    updateUserDate(Win);
                     break;
                 default:
                     break;

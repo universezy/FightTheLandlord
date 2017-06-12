@@ -71,7 +71,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_play);
         UserID = getIntent().getStringExtra(TransmitFlag.UserID);
         final String StartType = getIntent().getStringExtra(TransmitFlag.StartType);
-        InitLayout();
+        initLayout();
 
         serviceConnection = new ServiceConnection() {
             @Override
@@ -110,7 +110,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 初始化布局
      **/
-    private void InitLayout() {
+    private void initLayout() {
         mbtnBack = (Button) findViewById(R.id.btnBack);
         mbtnBack.setOnClickListener(this);
         mbtnPass = (Button) findViewById(R.id.btnPass);
@@ -152,14 +152,14 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnBack:
-                Save();
+                save();
                 break;
             case R.id.btnPass:
                 for (int i = 0; i < mllPlayerCards.getChildCount(); i++) {
                     mllPlayerCards.getChildAt(i).setBackgroundColor(Color.GRAY);
                 }
                 ArrayChooseCards.clear();
-                ChooseCards();
+                chooseCards();
                 break;
             case R.id.btnHint:
                 ArrayChooseCards.clear();
@@ -186,7 +186,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnPlay:
                 if (ArrayChooseCards.size() == 0) return;
-                ArrayChooseCards = CardUtil.SortByWeight(ArrayChooseCards);
+                ArrayChooseCards = CardUtil.sortByWeight(ArrayChooseCards);
                 Log.e("ArrayChooseCardsGetType", CardUtil.getGroupType(ArrayChooseCards));
                 if (CardUtil.getGroupType(ArrayChooseCards) != CardUtil.Type_Wrong) {
                     if (ArrayNowCards.size() != 0) {
@@ -200,7 +200,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                             mllPlayerCards.removeViewAt(i - 1);
                         }
                     }
-                    ChooseCards();
+                    chooseCards();
                 }
                 break;
             case R.id.btnBackToMain:
@@ -221,8 +221,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 选牌
      **/
-    public void ChooseCards() {
-        ArrayChooseCards = CardUtil.SortByWeight(ArrayChooseCards);
+    public void chooseCards() {
+        ArrayChooseCards = CardUtil.sortByWeight(ArrayChooseCards);
         mllButton.setVisibility(View.INVISIBLE);
         Intent intent_ChooseCards = new Intent(TransmitFlag.PlayService);
         intent_ChooseCards.putExtra(TransmitFlag.State, TransmitFlag.ChooseCards);
@@ -238,7 +238,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 加载玩家手牌
      **/
-    private void LoadPlayerCards() {
+    private void loadPlayerCards() {
         PlayerCardsListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -270,7 +270,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 单回合显示
      **/
-    private void NowPlayer(int rest) {
+    private void nowPlayer(int rest) {
         mllComputer1.setBackgroundColor(Color.LTGRAY);
         mllComputer2.setBackgroundColor(Color.LTGRAY);
         mllPlayer.setBackgroundColor(Color.LTGRAY);
@@ -295,7 +295,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 显示结果
      **/
-    private void ShowResult(String victor) {
+    private void showResult(String victor) {
         Toast.makeText(PlayActivity.this, victor + " win!", Toast.LENGTH_SHORT).show();
 
         View contentView = LayoutInflater.from(PlayActivity.this).inflate(R.layout.item_victor, null);
@@ -314,7 +314,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 保存进度
      **/
-    private void Save() {
+    private void save() {
         new AlertDialog.Builder(PlayActivity.this)
                 .setMessage("Do you want to save current progress?")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -323,7 +323,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                         dialog.dismiss();
                     }
                 })
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                .setPositiveButton("save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent_Save = new Intent(TransmitFlag.PlayService);
@@ -359,13 +359,13 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     ArrayLandlordCards = intent.getStringArrayListExtra(TransmitFlag.LandlordCards);
                     mvTableLandlord.setContent(ArrayLandlordCards);
                     mvTableLandlord.invalidate();
-                    LoadPlayerCards();
+                    loadPlayerCards();
                     break;
                 case TransmitFlag.NowPlayer:
                     NowPlayer = intent.getStringExtra(TransmitFlag.NowPlayer);
-                    Log.e("NowPlayer", NowPlayer);
+                    Log.e("nowPlayer", NowPlayer);
                     int rest1 = intent.getIntExtra(TransmitFlag.RestCards, 0);
-                    NowPlayer(rest1);
+                    nowPlayer(rest1);
                     break;
                 case TransmitFlag.NowCards:
                     ArrayList<String> arrayList = intent.getStringArrayListExtra(TransmitFlag.NowCards);
@@ -402,7 +402,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case TransmitFlag.TurnEnd:
                     String victor = intent.getStringExtra(TransmitFlag.Victor);
-                    ShowResult(victor);
+                    showResult(victor);
                     break;
                 default:
                     break;

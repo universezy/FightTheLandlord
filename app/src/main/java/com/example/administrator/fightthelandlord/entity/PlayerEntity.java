@@ -9,11 +9,11 @@ import java.util.ArrayList;
 public class PlayerEntity extends CustomEntity {
 
     public PlayerEntity(String Name) {
-        super.SetName(Name);
+        super.setName(Name);
     }
 
     @Override
-    public ArrayList<String>  PlayCard(ArrayList<String> cards) {
+    public ArrayList<String> playCard(ArrayList<String> cards) {
         for (String chooseCard : cards) {
             int index = ArrayCard.indexOf(chooseCard);
             ArrayCard.remove(index);

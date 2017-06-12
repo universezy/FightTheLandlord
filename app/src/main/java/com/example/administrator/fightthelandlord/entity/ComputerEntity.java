@@ -12,11 +12,11 @@ import java.util.ArrayList;
 public class ComputerEntity extends CustomEntity {
 
     public ComputerEntity(String Name) {
-        super.SetName(Name);
+        super.setName(Name);
     }
 
     @Override
-    public ArrayList<String> PlayCard(ArrayList<String> NowCards) {
+    public ArrayList<String> playCard(ArrayList<String> NowCards) {
         ArrayList<String> chooseCards ;
         ChooseUtil chooseUtil = new ChooseUtil(ArrayCard);
         //选牌逻辑

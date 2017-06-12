@@ -22,7 +22,7 @@ public class TransmitFlag {
     public static final String Save = "Save";
     public static final String NowCards ="NowCards";
     public static final String PlayerCards ="PlayerCards";
-    public static final String ChooseCards ="ChooseCards";
+    public static final String ChooseCards ="chooseCards";
     public static final String UpdateUserData ="UpdateUserData";
     public static final String RestCards ="RestCards";
     public static final String LandlordCards ="LandlordCards";
