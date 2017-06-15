@@ -10,7 +10,7 @@ I try my best to perfect the algorithm while computer choosing cards, but eventu
 
 ----
 
-## Screenshoot
+## Screenshot
 
 ### **Login**
  
