@@ -16,22 +16,22 @@ I try my best to perfect the algorithm while computer choosing cards, but eventu
  
 ***The login interface, save player's data by offline local file.***
 
-![](https://github.com/frogfans/FightTheLandlord/blob/master/image/login.jpg)
+![](image/login.jpg)
 
 ### **Main**
 
 ***The main interface, where player can watch own record and start game.***
 
-![](https://github.com/frogfans/FightTheLandlord/blob/master/image/main.jpg)
+![](image/main.jpg)
 
 ### **Turn of computer**
 
 ***Computer will choose cards or pass this turn by my algorithm according to cards on table.***
 
-![](https://github.com/frogfans/FightTheLandlord/blob/master/image/turnOfComputer.jpg)
+![](image/turnOfComputer.jpg)
 
 ### **Turn of player**
 
 ***Player can choose cards or pass this turn with limit of game rule.***
 
-![](https://github.com/frogfans/FightTheLandlord/blob/master/image/turnOfPlayer.jpg)
+![](image/turnOfPlayer.jpg)
